@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32407.343
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelMapper", "ExcelMapper\ExcelMapper.csproj", "{B72766E3-836D-48EA-ABF4-38C1F16F0DCE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B72766E3-836D-48EA-ABF4-38C1F16F0DCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B72766E3-836D-48EA-ABF4-38C1F16F0DCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B72766E3-836D-48EA-ABF4-38C1F16F0DCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B72766E3-836D-48EA-ABF4-38C1F16F0DCE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4821BF82-0B22-4859-8E62-89F8D07A2938}
+	EndGlobalSection
+EndGlobal
