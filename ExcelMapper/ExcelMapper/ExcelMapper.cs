@@ -1,6 +1,13 @@
-﻿using System;
+﻿using ExcelMapper.Exceptions;
+using ExcelMapper.Models;
+using ExcelMapper.Util;
+using NPOI.SS.Formula.Functions;
+using NPOI.SS.UserModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,10 +37,10 @@ namespace ExcelMapper.ExcelMapper
         /// Do mapping operation with configuration applied on MappingExpression
         /// </summary>
         /// <param name="sheet">Excel Worksheet to map from</param>
-        /// <param name="source">Excel row</param>
+        /// <param name="row">Excel row</param>
         /// <returns>instance of TDestionation class contains values from mapped from excel</returns>
         /// <exception cref="ExcelMappingException">throws on fail to map some properties from excel file</exception>
-        public TDestination Map(IWorksheet sheet, IRange source)
+        public TDestination Map(ISheet sheet, IRow row)
         {
             var item = new TDestination();
             var invalidColumns = new Dictionary<string, CellErrorLevel>();
@@ -48,12 +55,12 @@ namespace ExcelMapper.ExcelMapper
                 string value;
                 try
                 {
-                    value = GetValueOfCell(sheet, mappingCol, source.Row);
+                    value = GetValueOfCell(sheet, mappingCol, row.RowNum);
                 }
                 catch (Exception ex)
                 {
-                    invalidColumns.Add(mappingCol, CellErrorLevel.ValueError);
-                    WriteLine.Error($"error in getting value from {mappingCol + source.Row} - {ex.Message}");
+                    invalidColumns.Add(mappingCol, CellErrorLevel.Danger);
+                    WriteLine.Error($"error in getting value from {mappingCol + row.RowNum} - {ex.Message}");
                     continue;
                 }
 
@@ -66,7 +73,7 @@ namespace ExcelMapper.ExcelMapper
                 var isValid = Validate(propertyInfo, mappingCol, value);
                 if (!isValid)
                 {
-                    invalidColumns.Add(mappingCol, CellErrorLevel.ValidationError);
+                    invalidColumns.Add(mappingCol, CellErrorLevel.Warning);
                     continue;
                 }
 
@@ -76,7 +83,7 @@ namespace ExcelMapper.ExcelMapper
                 {
                     converted = action.Compile().DynamicInvoke(converted);
                 }
-                TConverter.SetValue(item, propertyInfo.Name, converted);
+                TypeConverter.SetValue(item, propertyInfo.Name, converted);
             }
             if (invalidColumns.Count > 0)
             {
@@ -106,15 +113,16 @@ namespace ExcelMapper.ExcelMapper
 
             return true;
         }
-
+        
         #region Utilities
-        private string GetValueOfCell(IWorksheet sheet, string col, double row)
+        private string GetValueOfCell(ISheet sheet, string col, int row)
         {
             var cell = col + row;
+            IRow activeRow = sheet.GetRow(row);
 
             try
             {
-                return sheet.Range[cell].DisplayText?.Trim();
+                return activeRow.Cells[col].DisplayText?.Trim();
             }
             catch (Exception ex)
             {

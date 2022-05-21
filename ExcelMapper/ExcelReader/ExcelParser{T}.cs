@@ -1,6 +1,9 @@
 ﻿using ExcelMapper.ExcelMapper;
 using ExcelMapper.Exceptions;
 using ExcelMapper.Models;
+using ExcelMapper.Util;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,9 +18,9 @@ namespace ExcelMapper.ExcelReader
         #region Fields
         private readonly FileInfo _file;
         private readonly ExcelMapper<TSource> _mapper;
-        private ExcelEngine _engine;
-        private IWorkbook _workBook;
-        private IWorksheet _worksheet;
+        // private ExcelEngine _engine;
+        private XSSFWorkbook _workBook;
+        private ISheet _worksheet;
         private readonly int _sheetIndex;
         #endregion
 
@@ -46,7 +49,7 @@ namespace ExcelMapper.ExcelReader
         public Dictionary<int, TSource> GetItems(int skip = 0, int? take = null)
         {
             InitializeExcelFile();
-            var result = new Dictionary<int, TSource>(_worksheet.Rows.Count());
+            var result = new Dictionary<int, TSource>(_worksheet.LastRowNum);
 
             var parallelOptions = new ParallelOptions
             {
@@ -55,29 +58,30 @@ namespace ExcelMapper.ExcelReader
                 // Convert.ToInt32(Math.Ceiling(Environment.ProcessorCount * 0.75 * 1.0))
             };
 
-            var collection = _worksheet.Rows.Skip(skip);
+            var collection = _worksheet.GetAllRows().Skip(skip);
             if (take != null)
             {
                 collection = collection.Take((int)take);
             }
+           
             Parallel.ForEach(
                 collection,
                 parallelOptions,
                 row =>
                 {
-                    if (IgnoreHeader && row.Row == 1) { return; }
+                    if (IgnoreHeader && row.RowNum == 1) { return; }
                     try
                     {
                         var item = _mapper.Map(_worksheet, row);
-                        result.Add(row.Row, item);
+                        result.Add(row.RowNum, item);
                     }
                     catch (ExcelMappingException ex)
                     {
-                        InvalidRows.Add(row.Row, ex.Cols);
+                        InvalidRows.Add(row.RowNum, ex.Cols);
                     }
                     catch (Exception ex)
                     {
-                        WriteLine.Error($"error in converting data at row  {row.Row} - {ex.Message}");
+                        WriteLine.Error($"error in converting data at row  {row.RowNum} - {ex.Message}");
                         return;
                     }
                 });
@@ -87,21 +91,21 @@ namespace ExcelMapper.ExcelReader
 
 
         #region Utilities
-        internal IWorksheets GetSheets()
-        {
-            return _engine.Excel.Worksheets;
-        }
+        //internal ISheet GetSheets()
+        //{
+        //    return _workBook.shee.Worksheets;
+        //}
 
         private void InitializeExcelFile()
         {
-            _engine = new ExcelEngine();
             try
             {
-                using var stream =
-                    File.Open(_file.FullName, FileMode.Open, FileAccess.Read);
-
-                _workBook = _engine.Excel.Workbooks.Open(stream);
-                _worksheet = _workBook.Worksheets[_sheetIndex];
+                using (var stream =
+                    File.Open(_file.FullName, FileMode.Open, FileAccess.Read))
+                {
+                    _workBook = new XSSFWorkbook(stream);
+                    _worksheet = _workBook.GetSheetAt(_sheetIndex);
+                }
             }
             catch (Exception ex)
             {
