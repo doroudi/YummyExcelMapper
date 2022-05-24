@@ -1,25 +1,15 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using ExcelMapper.Models;
+using System;
+using System.Collections.Generic;
 
 namespace ExcelMapper.Exceptions
 {
-    [Serializable]
-    internal class ExcelMappingException : Exception
+    public class ExcelMappingException : Exception
     {
-        public ExcelMappingException()
+        public Dictionary<string, CellErrorLevel> Cols { get; set; }
+        public ExcelMappingException(Dictionary<string, CellErrorLevel> cols)
         {
-        }
-
-        public ExcelMappingException(string message) : base(message)
-        {
-        }
-
-        public ExcelMappingException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        protected ExcelMappingException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
+            Cols = cols;
         }
     }
 }

@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ExcelMapper.ExcelReader
@@ -18,7 +17,6 @@ namespace ExcelMapper.ExcelReader
         #region Fields
         private readonly FileInfo _file;
         private readonly ExcelMapper<TSource> _mapper;
-        // private ExcelEngine _engine;
         private XSSFWorkbook _workBook;
         private ISheet _worksheet;
         private readonly int _sheetIndex;
