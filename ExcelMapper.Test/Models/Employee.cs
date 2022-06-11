@@ -17,5 +17,10 @@ namespace ExcelMapper.Test.Models
         public int Grade { get; set; }
         public DateTime JoinDate { get; set; }
         public DateTime BirthDate { get; set; }
+
+        public override string ToString()
+        {
+            return $"({Name} {Family}, {BirthDate:D})";
+        }
     }
 }

@@ -27,5 +27,14 @@ namespace ExcelMapper.Exceptions
             @this.CellStyle.VerticalAlignment = VerticalAlignment.Center;
             return @this;
         }
+
+        public static string GetValue(this ICell @this)
+            => @this.CellType switch
+            {
+                CellType.Numeric => @this.NumericCellValue.ToString(),
+                CellType.String => @this.StringCellValue,
+                CellType.Blank => string.Empty,
+                _ => @this.StringCellValue,
+            };
     }
 }

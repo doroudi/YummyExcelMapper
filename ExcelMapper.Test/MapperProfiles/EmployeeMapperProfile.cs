@@ -1,12 +1,6 @@
 ﻿using ExcelMapper.ExcelMapper;
 using ExcelMapper.Test.Models;
 using ExcelMapper.Validations;
-using NPOI.SS.UserModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ExcelMapper.Test.MapperProfiles
 {

@@ -11,4 +11,10 @@
     <ProjectReference Include="..\ExcelMapper\ExcelMapper.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="AppData\data.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

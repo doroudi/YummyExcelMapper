@@ -36,7 +36,7 @@ namespace ExcelMapper.ExcelMapper
                 string value;
                 try
                 {
-                    value = GetValueOfCell(sheet, mappingCol, row.RowNum);
+                    value = sheet.Cell(mappingCol, row.RowNum).GetValue() ;
                 }
                 catch (Exception ex)
                 {
@@ -97,20 +97,20 @@ namespace ExcelMapper.ExcelMapper
             return true;
         }
         
-        private string GetValueOfCell(ISheet sheet, string col, int row)
-        {
-            var cell = col + row;
-            var activeRow = sheet.GetRow(row);
+        //private string GetValueOfCell(ISheet sheet, string col, int row)
+        //{
+        //    var cell = col + row;
+        //    var activeRow = sheet.GetRow(row);
             
-            try
-            {
-                return activeRow.Cells[col].DisplayText?.Trim();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
+        //    try
+        //    {
+        //        return activeRow.Cells[col].DisplayText?.Trim();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
 
         private string GetMappingCol(PropertyInfo property)
         {

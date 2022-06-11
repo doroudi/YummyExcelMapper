@@ -22,17 +22,18 @@ namespace ExcelMapper.Logger
             orginalFile = new FileInfo(fileName);
             _resultCol = resultCol;
             
+
         }
-        
-        private void InitializeSourceFile(string logFile)
+
+        private void InitializeSourceFile()
         {
             try
             {
                 _stream =
-                    File.Open(logFile, FileMode.Open, FileAccess.ReadWrite);
+                    File.Open(orginalFile.FullName, FileMode.Open, FileAccess.ReadWrite);
 
                 using (var stream =
-                     File.Open(logFile, FileMode.Open, FileAccess.Read))
+                     File.Open(orginalFile.FullName, FileMode.Open, FileAccess.Read))
                 {
                     _workBook = new XSSFWorkbook(stream);
                     _worksheet = _workBook.GetSheetAt(0); //TODO: get sheet index
@@ -45,22 +46,18 @@ namespace ExcelMapper.Logger
             }
         }
 
-        private void InitializeOutputFile()
-        {
-            var logFileName = $"{Path.GetFileNameWithoutExtension(orginalFile.Name)}_{DateTime.Now:hh_mm_ss}.xlsx";
-            var filePath = Path.Combine(orginalFile.Directory.FullName, logFileName);
-            _logFile = filePath;
-        }
+        
 
         public void LogInvalidColumns(Dictionary<int, Dictionary<string, CellErrorLevel>> invalidRows, int sheetIndex = 0)
         {
+            InitializeSourceFile();
+            InitializeOutputFile();
             foreach (var row in invalidRows)
             {
                 foreach (var col in row.Value)
                 {
                     _worksheet.Cell(col.Key, row.Key).Colorize(col.Value);
                 }
-
 
                 _worksheet = _workBook[sheetIndex];
                 if (_resultCol != null)
@@ -87,6 +84,13 @@ namespace ExcelMapper.Logger
             SaveExcelFile();
         }
 
+        private void InitializeOutputFile()
+        {
+            var logFileName = $"{Path.GetFileNameWithoutExtension(orginalFile.Name)}_{DateTime.Now:hh_mm_ss}.xlsx";
+            var filePath = Path.Combine(orginalFile.Directory.FullName, logFileName);
+            _logFile = filePath;
+        }        
+        
         private void SaveExcelFile()
         {
             using (var stream =

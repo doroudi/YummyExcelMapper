@@ -67,7 +67,7 @@ namespace ExcelMapper.ExcelReader
                 parallelOptions,
                 row =>
                 {
-                    if (IgnoreHeader && row.RowNum == 1) { return; }
+                    if (IgnoreHeader && row.RowNum == 0) { return; }
                     try
                     {
                         var item = _mapper.Map(_worksheet, row);
