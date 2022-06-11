@@ -29,7 +29,7 @@ namespace ExcelMapper.ExcelReader
         {
             get
             {
-                return this._file;
+                return _file;
             }
         }
         public ExcelParser(FileInfo file, ExcelMapper<TSource> mapper, int sheetIndex = 0)
@@ -53,7 +53,7 @@ namespace ExcelMapper.ExcelReader
             {
                 // it is recommended to use 75% of available CPU cores for parallelism
                 MaxDegreeOfParallelism = 1
-                // Convert.ToInt32(Math.Ceiling(Environment.ProcessorCount * 0.75 * 1.0))
+                    // Convert.ToInt32(Math.Ceiling(Environment.ProcessorCount * 0.75 * 1.0))
             };
 
             var collection = _worksheet.GetAllRows().Skip(skip);
@@ -89,11 +89,6 @@ namespace ExcelMapper.ExcelReader
 
 
         #region Utilities
-        //internal ISheet GetSheets()
-        //{
-        //    return _workBook.shee.Worksheets;
-        //}
-
         private void InitializeExcelFile()
         {
             try
@@ -107,8 +102,7 @@ namespace ExcelMapper.ExcelReader
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                throw;
+                throw ex;
             }
         }
         #endregion

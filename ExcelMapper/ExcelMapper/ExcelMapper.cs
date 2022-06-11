@@ -9,33 +9,18 @@ using System.Reflection;
 
 namespace ExcelMapper.ExcelMapper
 {
-    /// <summary>
-    /// Mapper class for create map between POCO and Excel file
-    /// </summary>
-    /// <typeparam name="TDestination">Target class</typeparam>
     public abstract class ExcelMapper<TDestination> : IExcelMapper<TDestination> where TDestination : new()
     {
         private IExcelMappingExpression<TDestination> _mappingExpression;
 
-        /// <summary>
-        /// Create mapping expression between TDestination and excel file
-        /// </summary>
-        /// <returns>MappingExpression</returns>
+       
         public IExcelMappingExpression<TDestination> CreateMap()
         {
             var expression = new ExcelMappingExpression<TDestination>();
             _mappingExpression = expression;
             return expression;
         }
-
-
-        /// <summary>
-        /// Do mapping operation with configuration applied on MappingExpression
-        /// </summary>
-        /// <param name="sheet">Excel Worksheet to map from</param>
-        /// <param name="row">Excel row</param>
-        /// <returns>instance of TDestionation class contains values from mapped from excel</returns>
-        /// <exception cref="ExcelMappingException">throws on fail to map some properties from excel file</exception>
+        
         public TDestination Map(ISheet sheet, IRow row)
         {
             var item = new TDestination();
@@ -89,6 +74,8 @@ namespace ExcelMapper.ExcelMapper
             return item;
         }
 
+
+        #region Utilities
         private bool Validate(PropertyInfo propertyInfo, string mappingCol, string value)
         {
             var validations = GetValidations(propertyInfo);
@@ -110,12 +97,11 @@ namespace ExcelMapper.ExcelMapper
             return true;
         }
         
-        #region Utilities
         private string GetValueOfCell(ISheet sheet, string col, int row)
         {
             var cell = col + row;
-            IRow activeRow = sheet.GetRow(row);
-
+            var activeRow = sheet.GetRow(row);
+            
             try
             {
                 return activeRow.Cells[col].DisplayText?.Trim();

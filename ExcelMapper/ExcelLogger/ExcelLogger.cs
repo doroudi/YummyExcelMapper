@@ -1,20 +1,21 @@
-﻿using System;
+﻿using ExcelMapper.Exceptions;
+using ExcelMapper.Models;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace ExcelMapper.Logger
 {
     public class ExcelLogger : IDisposable
     {
         private readonly FileInfo orginalFile;
-        private ExcelEngine _engine;
-        private IWorkbook _workBook;
-        private IWorksheet _worksheet;
         private FileStream _stream;
         private readonly string _resultCol;
-        private bool _initialized;
         private string _logFile;
+        private XSSFWorkbook _workBook;
+        private ISheet _worksheet;
 
         public ExcelLogger(string fileName, string resultCol = null)
         {
@@ -22,17 +23,20 @@ namespace ExcelMapper.Logger
             _resultCol = resultCol;
             
         }
-
+        
         private void InitializeSourceFile(string logFile)
         {
-            _engine = new ExcelEngine();
             try
             {
                 _stream =
                     File.Open(logFile, FileMode.Open, FileAccess.ReadWrite);
 
-                _workBook = _engine.Excel.Workbooks.Open(_stream, ExcelOpenType.Automatic);
-                _worksheet = _workBook.Worksheets.First();
+                using (var stream =
+                     File.Open(logFile, FileMode.Open, FileAccess.Read))
+                {
+                    _workBook = new XSSFWorkbook(stream);
+                    _worksheet = _workBook.GetSheetAt(0); //TODO: get sheet index
+                }
             }
             catch (Exception ex)
             {
@@ -54,61 +58,47 @@ namespace ExcelMapper.Logger
             {
                 foreach (var col in row.Value)
                 {
-                    ColorizeCol(col.Key, row.Key,
-                        col.Value == CellErrorLevel.ValidationError ?
-                            ExcelKnownColors.Yellow : ExcelKnownColors.Red);
+                    _worksheet.Cell(col.Key, row.Key).Colorize(col.Value);
                 }
 
 
-                _worksheet = _workBook.Worksheets[sheetIndex];
+                _worksheet = _workBook[sheetIndex];
                 if (_resultCol != null)
                 {
-                    ColorizeCol(_resultCol, row.Key, ExcelKnownColors.Yellow);
-                    var cell = $"{_resultCol}{row.Key}";
-                    _worksheet[cell].Value = "Invalid";
-                    _worksheet[cell].HorizontalAlignment = ExcelHAlign.HAlignCenter;
-                    _worksheet[cell].VerticalAlignment = ExcelVAlign.VAlignCenter;
+                    _worksheet.Cell(_resultCol, row.Key)
+                                .Colorize(CellErrorLevel.Warning)
+                                .SetCentered()
+                                .SetCellValue("Invalid");
                 }
             }
             SaveExcelFile();
         }
 
-        public void LogFailedRows(Dictionary<int, Exception> failedRows)
+        public void LogFailedRows(Dictionary<int, Exception> failedRows, string message = "Failed")
         {
             foreach (var row in failedRows)
             {
-                ColorizeCol(_resultCol, row.Key , ExcelKnownColors.Red);
                 var cell = $"{_resultCol}{row.Key}";
-                _worksheet[cell].Value = $"Failed";
-                _worksheet[cell].HorizontalAlignment = ExcelHAlign.HAlignCenter;
-                _worksheet[cell].VerticalAlignment = ExcelVAlign.VAlignCenter;
+                _worksheet.Cell(cell).Colorize(CellErrorLevel.Danger)
+                            .SetCentered()
+                            .SetCellValue(message);
+               
             }
             SaveExcelFile();
-        }
-
-        private void ColorizeCol(string col, int row, ExcelKnownColors color)
-        {
-            if (!_initialized)
-            {
-                InitializeSourceFile(orginalFile.FullName);
-                InitializeOutputFile();
-                _initialized = true;
-            }
-            var cell = $"{col}{row}";
-            _worksheet[cell].CellStyle.ColorIndex = color;
         }
 
         private void SaveExcelFile()
         {
-            using var stream =
-                   File.Open(_logFile, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-            _workBook.SaveAs(stream, ExcelSaveType.SaveAsXLS);
+            using (var stream =
+                   File.Open(_logFile, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+            {
+                _workBook.Write(stream);
+            }
         }
 
         public void Dispose()
         {
             _stream.Dispose();
-            _engine.Dispose();
         }
     }
 }
