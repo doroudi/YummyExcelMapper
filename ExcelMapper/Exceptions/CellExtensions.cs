@@ -34,7 +34,7 @@ namespace ExcelMapper.Exceptions
                 CellType.Numeric => @this.NumericCellValue.ToString(),
                 CellType.String => @this.StringCellValue,
                 CellType.Blank => string.Empty,
-                _ => @this.StringCellValue,
+                _ => string.Empty
             };
     }
 }

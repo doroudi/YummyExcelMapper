@@ -36,7 +36,7 @@ namespace ExcelMapper.ExcelMapper
                 string value;
                 try
                 {
-                    value = sheet.Cell(mappingCol, row.RowNum).GetValue() ;
+                    value = sheet.Cell(mappingCol, row.RowNum)?.GetValue() ;
                 }
                 catch (Exception ex)
                 {

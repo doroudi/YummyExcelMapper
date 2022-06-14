@@ -1,5 +1,6 @@
 ﻿using NPOI.SS.UserModel;
 using NPOI.SS.Util;
+using System;
 using System.Text.RegularExpressions;
 
 namespace ExcelMapper.Exceptions
@@ -8,15 +9,24 @@ namespace ExcelMapper.Exceptions
     {
         public static ICell Cell(this ISheet @this, string cell)
         {
-            var (col, row) = ParseCellAddress(cell);
-            var activeRow = @this.GetRow(row);
-            return activeRow.Cells[col];
+            var cellReference = new CellReference(cell);
+            var activeRow = @this.GetRow(cellReference.Row);
+            return activeRow.GetCell(cellReference.Col);
         }
 
         public static ICell Cell(this ISheet @this, string col,int row)
         {
-            var activeRow = @this.GetRow(row);
-            return activeRow.Cells[GetExcelColIndex(col)];
+            try
+            {
+                var cellReference = new CellReference($"{col}{row}");
+                var activeRow = @this.GetRow(cellReference.Row);
+                return activeRow.GetCell(cellReference.Col);
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(row);
+                throw;
+            }
         }
 
 
