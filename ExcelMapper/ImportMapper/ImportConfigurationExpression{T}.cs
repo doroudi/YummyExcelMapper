@@ -7,9 +7,9 @@ using System.Linq.Expressions;
 
 namespace ExcelMapper.ExcelMapper
 {
-    public class MemberConfigurationExpression<TDestination>
+    public class ImportConfigurationExpression<TDestination>
     {
-        public MemberConfigurationExpression<TDestination> MapFromAttribute()
+        public ImportConfigurationExpression<TDestination> MapFromAttribute()
         {
             return this;
         }
@@ -92,10 +92,5 @@ namespace ExcelMapper.ExcelMapper
             IgnoredValue.AddRange(new string[] { "", " ", "-", "_", "0" });
             return this;
         }
-    }
-
-    public class ConvertAction
-    {
-        public LambdaExpression CustomAction { get; set; }
     }
 }

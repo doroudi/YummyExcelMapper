@@ -9,14 +9,14 @@ using System.Reflection;
 
 namespace ExcelMapper.ExcelMapper
 {
-    public abstract class ExcelMapper<TDestination> : IExcelMapper<TDestination> where TDestination : new()
+    public abstract class ExcelImportMapper<TDestination> : IImportMapper<TDestination> where TDestination : new()
     {
-        private IExcelMappingExpression<TDestination> _mappingExpression;
+        private IImportMappingExpression<TDestination> _mappingExpression;
 
        
-        public IExcelMappingExpression<TDestination> CreateMap()
+        public IImportMappingExpression<TDestination> CreateMap()
         {
-            var expression = new ExcelMappingExpression<TDestination>();
+            var expression = new ImportMappingExpression<TDestination>();
             _mappingExpression = expression;
             return expression;
         }

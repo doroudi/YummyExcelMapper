@@ -4,7 +4,7 @@ using ExcelMapper.Validations;
 
 namespace ExcelMapper.Test.MapperProfiles
 {
-    public class EmployeeMapperProfile : ExcelMapper<Employee>
+    public class EmployeeMapperProfile : ExcelImportMapper<Employee>
     {
         public EmployeeMapperProfile()
         {

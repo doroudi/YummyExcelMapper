@@ -1,7 +1,9 @@
-﻿using ExcelMapper.ExcelReader;
+﻿using ExcelMapper;
+using ExcelMapper.ExcelParser;
 using ExcelMapper.Logger;
 using ExcelMapper.Test.MapperProfiles;
 using ExcelMapper.Test.Models;
+using NPOI.SS.Util;
 
 var fileName = @"AppData\data.xlsx";
 ExcelParser<Employee> parser = new (new FileInfo(fileName), new EmployeeMapperProfile());
@@ -15,3 +17,10 @@ foreach (var emplyee in employees.Values)
 {
     Console.WriteLine(emplyee);
 }
+
+
+var exporter = new ExcelWriter();
+
+exporter.AddSheet<Employee>(new ExportProfile(), x => x.UseData(employees.Values).UseDefaultHeaderStyle());
+
+exporter.SaveToFile(fileName);

@@ -7,14 +7,14 @@ using ExcelMapper.Models;
 
 namespace ExcelMapper.ExcelMapper
 {
-    public class ExcelMappingExpression<TDestination> : IExcelMappingExpression<TDestination>
+    public class ImportMappingExpression<TDestination> : IImportMappingExpression<TDestination>
     {
-        private List<PropertyMapInfo> _memberConfigurations =
+        private readonly List<PropertyMapInfo> _memberConfigurations =
             new List<PropertyMapInfo>();
 
 
-        public IExcelMappingExpression<TDestination> ForAllMembers
-            (Action<MemberConfigurationExpression<TDestination>> memberOptions)
+        public IImportMappingExpression<TDestination> ForAllMembers
+            (Action<ImportConfigurationExpression<TDestination>> memberOptions)
         {
             // TODO: implement this
 
@@ -31,7 +31,7 @@ namespace ExcelMapper.ExcelMapper
             return this;
         }
 
-        public IExcelMappingExpression<TDestination> ForAllOtherMembers(Action<MemberConfigurationExpression<TDestination>> memberOptions)
+        public IImportMappingExpression<TDestination> ForAllOtherMembers(Action<ImportConfigurationExpression<TDestination>> memberOptions)
         {
             // TODO: implement this
 
@@ -44,7 +44,7 @@ namespace ExcelMapper.ExcelMapper
             return this;
         }
 
-        public IExcelMappingExpression<TDestination> ForMember<TMember>
+        public IImportMappingExpression<TDestination> ForMember<TMember>
             (Expression<Func<TDestination, TMember>> destinationMember,
             Action<ExcelMemberConfigurationExpression<TDestination, TMember>> memberOptions)
         {

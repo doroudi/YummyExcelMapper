@@ -10,14 +10,13 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ExcelMapper.ExcelReader
+namespace ExcelMapper.ExcelParser
 {
     public class ExcelParser<TSource> where TSource : new()
     {
         #region Fields
         private readonly FileInfo _file;
-        private readonly ExcelMapper<TSource> _mapper;
-        private XSSFWorkbook _workBook;
+        private readonly ExcelImportMapper<TSource> _mapper;
         private ISheet _worksheet;
         private readonly int _sheetIndex;
         #endregion
@@ -32,7 +31,7 @@ namespace ExcelMapper.ExcelReader
                 return _file;
             }
         }
-        public ExcelParser(FileInfo file, ExcelMapper<TSource> mapper, int sheetIndex = 0)
+        public ExcelParser(FileInfo file, ExcelImportMapper<TSource> mapper, int sheetIndex = 0)
         {
             _file = file;
             _mapper = mapper;
@@ -93,12 +92,8 @@ namespace ExcelMapper.ExcelReader
         {
             try
             {
-                using (var stream =
-                    File.Open(_file.FullName, FileMode.Open, FileAccess.Read))
-                {
-                    _workBook = new XSSFWorkbook(stream);
-                    _worksheet = _workBook.GetSheetAt(_sheetIndex);
-                }
+                _worksheet = new ExcelReader(_file.FullName)[_sheetIndex];
+                
             }
             catch (Exception ex)
             {
