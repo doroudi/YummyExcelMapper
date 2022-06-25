@@ -1,6 +1,6 @@
 ﻿using ExcelMapper.ExcelExporter;
-using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,13 +11,13 @@ namespace ExcelMapper
     {
         #region Fields
         private readonly List<ISheet> Sheets;
-        private readonly HSSFWorkbook _workBook;
+        private readonly XSSFWorkbook _workBook;
         #endregion
 
         #region Constructor
         public ExcelWriter()
         {
-            _workBook = new HSSFWorkbook();
+            _workBook = new XSSFWorkbook();
             Sheets = new List<ISheet>();
         }
         #endregion
@@ -34,9 +34,6 @@ namespace ExcelMapper
             return this;
         }
 
-       
-
-       
 
         // TODO: add T based collection constructor to build SheetBuilder with T collection type
         // Insted of TCollection in simple cases
@@ -49,13 +46,17 @@ namespace ExcelMapper
         /// <returns>self class instance for chaining functionality</returns>
         public ExcelWriter SaveToFile(string exportFolder)
         {
-            var exportFileName = Guid.NewGuid() + ".xls";
+            var exportFileName = Guid.NewGuid() + ".xlsx";
             if (!Directory.Exists(exportFolder))
             {
-                throw new Exception("مسیر فایل وجود ندارد");
+                throw new Exception("file path isn't valid");
             }
             var file = new FileInfo(Path.Combine(exportFolder, exportFileName));
-            //_excel.SaveAs(file);
+            using (var fileData = new FileStream(file.FullName, FileMode.Create))
+            {
+                _workBook.Write(fileData);
+            }
+            
             return this;
         }
 

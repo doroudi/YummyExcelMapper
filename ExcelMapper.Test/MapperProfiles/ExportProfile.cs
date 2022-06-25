@@ -1,10 +1,5 @@
 ﻿using ExcelMapper.ExcelExporter;
 using ExcelMapper.Test.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ExcelMapper.Test.MapperProfiles
 {
@@ -14,15 +9,16 @@ namespace ExcelMapper.Test.MapperProfiles
         {
             CreateMap()
                 .ForColumn("A", x => x.Name, opt => opt.WithTitle("Name"))
-                .ForColumn("B", x => x.Family)
-                .ForColumn("C", x => x.BirthDate , opt => opt.UseAction(ConvertToPersian))
-                .ForColumn("D", x => x.Address);
+                .ForColumn("B", x => x.Family, opt => opt.WithTitle("Family"))
+                .ForColumn("C", x => x.BirthDate, opt => opt.WithTitle("BirthDate").UseAction(ConvertToPersian))
+                .ForColumn("D", x => x.Address, opt => opt.WithTitle("Address"))
+                .ForColumn("E", x => x.Name, opt => opt.WithTitle("NAME").UseAction(x => x.ToUpper()));
                 // .ForColumn("B", opt => opt.MapFrom<Employee>(x => x.Name));
         }
 
         private string ConvertToPersian(DateTime arg)
         {
-            throw new NotImplementedException();
+            return arg.ToShortDateString();
         }
     }
 }

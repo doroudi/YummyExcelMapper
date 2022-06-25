@@ -46,21 +46,20 @@ namespace ExcelMapper.ExcelExporter
         }
 
         public ExportMappingExpression<TDestination> ForColumn<TMember>
-            (string col, 
+            (string column, 
             Expression<Func<TDestination, TMember>> destinationMember,
             Action<ExportMemberConfigurationExpression<TDestination, TMember>> memberOptions = null)
         {
-            //var memberName = ((MemberExpression)destinationMember.Body).Member.Name;
-            //var property = typeof(TDestination).GetProperty(memberName);
+            var memberName = ((MemberExpression)destinationMember.Body).Member.Name;
+            var property = typeof(TDestination).GetProperty(memberName);
 
             var expression = new ExportMemberConfigurationExpression<TDestination, TMember>();
             memberOptions(expression);
-
             var config = new CellMappingInfo
             {
                 Title = expression.Header,
-                Column = expression.Column,
-                Property = expression.Property,
+                Column = column,
+                Property = property,
                 Actions = expression.Actions,
                 Style = expression.CellStyle
             };

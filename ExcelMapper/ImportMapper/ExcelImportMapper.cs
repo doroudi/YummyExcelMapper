@@ -30,18 +30,18 @@ namespace ExcelMapper.ExcelMapper
                 var mappingCol = GetMappingCol(propertyInfo);
                 if (string.IsNullOrEmpty(mappingCol))
                     continue;
-
+                var rowNumber = row.RowNum + 1;
 
                 // check for ignored value
                 string value;
                 try
                 {
-                    value = sheet.Cell(mappingCol, row.RowNum)?.GetValue() ;
+                    value = sheet.Cell(mappingCol, rowNumber)?.GetValue() ;
                 }
                 catch (Exception ex)
                 {
                     invalidColumns.Add(mappingCol, CellErrorLevel.Danger);
-                    WriteLine.Error($"error in getting value from {mappingCol + row.RowNum} - {ex.Message}");
+                    WriteLine.Error($"error in getting value from {mappingCol + rowNumber} - {ex.Message}");
                     continue;
                 }
 
