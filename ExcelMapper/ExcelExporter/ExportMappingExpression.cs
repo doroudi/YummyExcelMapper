@@ -13,6 +13,7 @@ namespace ExcelMapper.ExcelExporter
         private readonly List<CellMappingInfo> _memberConfigurations =
            new List<CellMappingInfo>();
 
+        public List<CellMappingInfo> Mappings => _memberConfigurations;
 
         public IExportMappingExpression<TDestination> ForAllMembers
             (Action<ExportConfigurationExpression<TDestination>> memberOptions)
@@ -90,9 +91,6 @@ namespace ExcelMapper.ExcelExporter
             return _memberConfigurations.FirstOrDefault(x => x.Column == col).Property;
         }
 
-        public List<CellMappingInfo> GetMappings()
-        {
-            return _memberConfigurations;
-        }
+        
     }
 }

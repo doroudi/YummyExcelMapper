@@ -39,6 +39,10 @@ namespace ExcelMapper.ExcelExporter
 
         public SheetBuilder<TSource> UseDefaultHeaderStyle()
         {
+            var headerStyle = _workBook.CreateCellStyle();
+            headerStyle.FillBackgroundColor = IndexedColors.Grey25Percent.Index;
+            _options.HeaderStyle = headerStyle;
+            
             return this;
         }
 
@@ -84,17 +88,12 @@ namespace ExcelMapper.ExcelExporter
         private void BuildHeader()
         {
             // TODO: implement this
-
-
-            //for (int i = 0; i < props.Length; i++)
-            //{
-            //    PropertyInfo property = props[i];
-            //    var colAddress = GetColumnName(i) + "1";
-            //    var excelCol = _excel.Workbook.Worksheets[_sheetName].Cells[colAddress];
-            //    excelCol.ApplyStyle(_headerStyle);
-            //    excelCol.Value = property.GetDisplayName();
-            //    _excel.Workbook.Worksheets[_sheetName].Column(i + 1).Width = property.GetWidth() ?? DEFAULT_CELL_WIDTH;
-            //}
+            var headerRow = _sheet.CreateRow(0);
+            _mapper.MapHeader(headerRow);
+            foreach (var cell in _sheet.GetRow(0))
+            {   
+                cell.CellStyle = _options.HeaderStyle;
+            }
         }
 
     }

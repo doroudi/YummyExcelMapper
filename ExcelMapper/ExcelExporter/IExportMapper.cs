@@ -1,4 +1,6 @@
-﻿using NPOI.SS.UserModel;
+﻿using ExcelMapper.Models;
+using NPOI.SS.UserModel;
+using System.Collections.Generic;
 
 namespace ExcelMapper.ExcelExporter
 {
@@ -22,5 +24,9 @@ namespace ExcelMapper.ExcelExporter
         /// <returns>instance of TDestionation class contains values from mapped from excel</returns>
         /// <exception cref="ExcelMappingException">throws on fail to map some properties from excel file</exception>
         IRow Map(TDestination data, IRow row);
+
+        List<CellMappingInfo> Mappings { get; }
+
+        IRow MapHeader(IRow headerRow);
     }
 }

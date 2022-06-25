@@ -14,6 +14,6 @@ namespace ExcelMapper.ExcelExporter
             Action<ExportMemberConfigurationExpression<TDestination, TMember>>? memberOptions = null);
         PropertyInfo GetProperty(string col);
         List<LambdaExpression> GetActions(PropertyInfo propertyInfo);
-        List<CellMappingInfo> GetMappings();
+        public List<CellMappingInfo> Mappings { get; }
     }
 }
