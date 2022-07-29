@@ -9,14 +9,12 @@ using System.Reflection;
 
 namespace ExcelMapper.ExcelMapper
 {
-    public abstract class ExcelImportMapper<TDestination> : IImportMapper<TDestination> where TDestination : new()
+    public abstract class ExcelMapper<TDestination> : IExcelMapper<TDestination> where TDestination : new()
     {
-        private IImportMappingExpression<TDestination> _mappingExpression;
-
-       
-        public IImportMappingExpression<TDestination> CreateMap()
+        private IExcelMappingExpression<TDestination> _mappingExpression;
+        public IExcelMappingExpression<TDestination> CreateMap()
         {
-            var expression = new ImportMappingExpression<TDestination>();
+            var expression = new ExcelMappingExpression<TDestination>();
             _mappingExpression = expression;
             return expression;
         }
@@ -29,19 +27,21 @@ namespace ExcelMapper.ExcelMapper
             {
                 var mappingCol = GetMappingCol(propertyInfo);
                 if (string.IsNullOrEmpty(mappingCol))
+                {
                     continue;
-                var rowNumber = row.RowNum + 1;
+                }
+
 
                 // check for ignored value
                 string value;
                 try
                 {
-                    value = sheet.Cell(mappingCol, rowNumber)?.GetValue() ;
+                    value = sheet.Cell(mappingCol, row.RowNum)?.GetValue() ;
                 }
                 catch (Exception ex)
                 {
                     invalidColumns.Add(mappingCol, CellErrorLevel.Danger);
-                    WriteLine.Error($"error in getting value from {mappingCol + rowNumber} - {ex.Message}");
+                    WriteLine.Error($"error in getting value from {mappingCol + row.RowNum} - {ex.Message}");
                     continue;
                 }
 
