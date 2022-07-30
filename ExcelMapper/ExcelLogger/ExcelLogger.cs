@@ -21,8 +21,6 @@ namespace ExcelMapper.Logger
         {
             orginalFile = new FileInfo(fileName);
             _resultCol = resultCol;
-            
-
         }
 
         private void InitializeSourceFile()
@@ -46,11 +44,11 @@ namespace ExcelMapper.Logger
             }
         }
 
-        
+
 
         public void LogInvalidColumns(Dictionary<int, Dictionary<string, CellErrorLevel>> invalidRows, int sheetIndex = 0)
         {
-            InitializeSourceFile();
+            // InitializeSourceFile();
             InitializeOutputFile();
             foreach (var row in invalidRows)
             {
@@ -79,7 +77,7 @@ namespace ExcelMapper.Logger
                 _worksheet.Cell(cell).Colorize(CellErrorLevel.Danger)
                             .SetCentered()
                             .SetCellValue(message);
-               
+
             }
             SaveExcelFile();
         }
@@ -89,15 +87,13 @@ namespace ExcelMapper.Logger
             var logFileName = $"{Path.GetFileNameWithoutExtension(orginalFile.Name)}_{DateTime.Now:hh_mm_ss}.xlsx";
             var filePath = Path.Combine(orginalFile.Directory.FullName, logFileName);
             _logFile = filePath;
-        }        
-        
+        }
+
         private void SaveExcelFile()
         {
-            using (var stream =
-                   File.Open(_logFile, FileMode.OpenOrCreate, FileAccess.ReadWrite))
-            {
-                _workBook.Write(stream);
-            }
+            using var stream =
+                   File.Open(_logFile, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            _workBook.Write(stream);
         }
 
         public void Dispose()
