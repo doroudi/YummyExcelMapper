@@ -1,11 +1,12 @@
 ﻿using ExcelMapper.ExcelExporter;
 using ExcelMapper.Test.Models;
+using NPOI.SS.UserModel;
 
 namespace ExcelMapper.Test.MapperProfiles
 {
     public class ExportProfile: ExportMapper<Employee>
     {
-        public ExportProfile()
+        public ExportProfile(IWorkbook workbook): base(workbook)
         {
             CreateMap()
                 .ForColumn("A", x => x.Name, opt => opt.WithTitle("Name"))

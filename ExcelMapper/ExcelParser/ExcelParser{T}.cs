@@ -3,7 +3,6 @@ using ExcelMapper.Exceptions;
 using ExcelMapper.Models;
 using ExcelMapper.Util;
 using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -43,7 +42,7 @@ namespace ExcelMapper.ExcelParser
         /// Get items list from excel file based on mapping profile
         /// </summary>
         /// <returns>List of employees in exel file</returns>
-        public Dictionary<int, TSource> GetItems(int skip = 0, int? take = null)
+        public Dictionary<int, TSource> GetItems(int? take = null, int skip = 0)
         {
             InitializeExcelFile();
             var result = new Dictionary<int, TSource>(_worksheet.LastRowNum);
@@ -52,7 +51,7 @@ namespace ExcelMapper.ExcelParser
             {
                 // it is recommended to use 75% of available CPU cores for parallelism
                 MaxDegreeOfParallelism = 1
-                    // Convert.ToInt32(Math.Ceiling(Environment.ProcessorCount * 0.75 * 1.0))
+                // Convert.ToInt32(Math.Ceiling(Environment.ProcessorCount * 0.75 * 1.0))
             };
 
             var collection = _worksheet.GetAllRows().Skip(skip);
@@ -60,7 +59,7 @@ namespace ExcelMapper.ExcelParser
             {
                 collection = collection.Take((int)take);
             }
-           
+
             Parallel.ForEach(
                 collection,
                 parallelOptions,
@@ -93,7 +92,7 @@ namespace ExcelMapper.ExcelParser
             try
             {
                 _worksheet = new ExcelReader(_file.FullName)[_sheetIndex];
-                
+
             }
             catch (Exception ex)
             {

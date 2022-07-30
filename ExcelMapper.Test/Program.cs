@@ -8,9 +8,8 @@ var fileName = @"AppData\data.xlsx";
 ExcelParser<Employee> parser = new (new FileInfo(fileName), new EmployeeMapperProfile());
 
 var employees = parser.GetItems();
-//var logger = new ExcelLogger(fileName);
-
-//logger.LogInvalidColumns(parser.InvalidRows);
+var logger = new ExcelLogger(fileName);
+logger.LogInvalidColumns(parser.InvalidRows);
 
 foreach (var emplyee in employees.Values)
 {
@@ -21,8 +20,8 @@ foreach (var emplyee in employees.Values)
 var exporter = new ExcelWriter();
 
 exporter.AddSheet<Employee>(
-            new ExportProfile(), 
+            new ExportProfile(exporter.WorkBook), 
             x => x.SetRtl().UseData(employees.Values).UseDefaultHeaderStyle().Build()
         );
 
-exporter.SaveToFile("D:\\excel\\");
+exporter.SaveToFile("D:\\excel\\EXPORT.xlsx");

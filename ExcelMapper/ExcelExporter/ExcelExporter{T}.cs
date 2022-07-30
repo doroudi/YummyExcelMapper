@@ -4,21 +4,22 @@ using NPOI.XSSF.UserModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace ExcelMapper
 {
     public class ExcelWriter
     {
         #region Fields
-        private readonly List<ISheet> Sheets;
         private readonly XSSFWorkbook _workBook;
         #endregion
+
+        public XSSFWorkbook WorkBook => _workBook;
 
         #region Constructor
         public ExcelWriter()
         {
             _workBook = new XSSFWorkbook();
-            Sheets = new List<ISheet>();
         }
         #endregion
 
@@ -35,53 +36,25 @@ namespace ExcelMapper
         }
 
 
-        // TODO: add T based collection constructor to build SheetBuilder with T collection type
-        // Insted of TCollection in simple cases
-
-
         /// <summary>
-        /// Save generated excel document to specified file
+        /// Save generated excel document to memory stream and return it
         /// </summary>
-        /// <param name="exportFolder"></param>
-        /// <returns>self class instance for chaining functionality</returns>
-        public ExcelWriter SaveToFile(string exportFolder)
+        /// <returns>Memory stream contains excel file's outputs</returns>
+        public MemoryStream GetFileContent()
         {
-            var exportFileName = Guid.NewGuid() + ".xlsx";
-            if (!Directory.Exists(exportFolder))
-            {
-                throw new Exception("file path isn't valid");
-            }
-            var file = new FileInfo(Path.Combine(exportFolder, exportFileName));
-            using (var fileData = new FileStream(file.FullName, FileMode.Create))
-            {
-                _workBook.Write(fileData);
-            }
-            
-            return this;
+            using var memoryData = new MemoryStream();
+            _workBook.Write(memoryData);
+            GC.Collect();
+
+            return memoryData;
         }
 
-        /// <summary>
-        /// Return MemoryStream of current Excel file
-        /// </summary>
-        /// <returns>MemoryStrem</returns>
-        //public async Task<MemoryStream> GetMemoryStream()
-        //{
-        //    var memory = new MemoryStream();
-        //    try
-        //    {
-        //        using (var stream = new FileStream(_lastFile.FullName, FileMode.Open))
-        //        {
-        //            await stream.CopyToAsync(memory);
-        //        }
-        //        _lastFile.Delete();
-        //        memory.Position = 0;
-        //        return memory;
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw;
-        //    }
-        //}
+        public void SaveToFile(string fileName)
+        {
+            using var fileStream = new FileStream(fileName, FileMode.Create, FileAccess.Write);
+            _workBook.Write(fileStream);
+            GC.Collect();
+        }
 
         #endregion
     }

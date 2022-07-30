@@ -4,21 +4,24 @@ using ExcelMapper.Util;
 using NPOI.SS.UserModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
 
 namespace ExcelMapper.ExcelMapper
 {
-    public abstract class ExcelMapper<TDestination> : IExcelMapper<TDestination> where TDestination : new()
+    public abstract class ExcelImportMapper<TDestination> : IImportMapper<TDestination> where TDestination : new()
     {
-        private IExcelMappingExpression<TDestination> _mappingExpression;
-        public IExcelMappingExpression<TDestination> CreateMap()
+        private IImportMappingExpression<TDestination> _mappingExpression;
+
+
+        public IImportMappingExpression<TDestination> CreateMap()
         {
-            var expression = new ExcelMappingExpression<TDestination>();
+            var expression = new ImportMappingExpression<TDestination>();
             _mappingExpression = expression;
             return expression;
         }
-        
+
         public TDestination Map(ISheet sheet, IRow row)
         {
             var item = new TDestination();
@@ -27,21 +30,19 @@ namespace ExcelMapper.ExcelMapper
             {
                 var mappingCol = GetMappingCol(propertyInfo);
                 if (string.IsNullOrEmpty(mappingCol))
-                {
                     continue;
-                }
-
+                var rowNumber = row.RowNum + 1;
 
                 // check for ignored value
                 string value;
                 try
                 {
-                    value = sheet.Cell(mappingCol, row.RowNum)?.GetValue() ;
+                    value = sheet.Cell(mappingCol, rowNumber)?.GetValue() ?? "";
                 }
                 catch (Exception ex)
                 {
                     invalidColumns.Add(mappingCol, CellErrorLevel.Danger);
-                    WriteLine.Error($"error in getting value from {mappingCol + row.RowNum} - {ex.Message}");
+                    WriteLine.Error($"error in getting value from {mappingCol + rowNumber} - {ex.Message}");
                     continue;
                 }
 
@@ -58,13 +59,23 @@ namespace ExcelMapper.ExcelMapper
                     continue;
                 }
 
-                var actions = GetMappingActions(propertyInfo);
-                object converted = value;
-                foreach (var action in actions)
+
+                try
                 {
-                    converted = action.Compile().DynamicInvoke(converted);
+                    var actions = GetMappingActions(propertyInfo);
+                    object converted = value;
+                    foreach (var action in actions)
+                    {
+
+                        converted = action.Compile().DynamicInvoke(converted);
+
+                    }
+                    TypeConverter.SetValue(item, propertyInfo.Name, converted);
                 }
-                TypeConverter.SetValue(item, propertyInfo.Name, converted);
+                catch (Exception ex)
+                {
+                    Debugger.Break();
+                }
             }
             if (invalidColumns.Count > 0)
             {
@@ -96,12 +107,12 @@ namespace ExcelMapper.ExcelMapper
 
             return true;
         }
-        
+
         //private string GetValueOfCell(ISheet sheet, string col, int row)
         //{
         //    var cell = col + row;
         //    var activeRow = sheet.GetRow(row);
-            
+
         //    try
         //    {
         //        return activeRow.Cells[col].DisplayText?.Trim();
