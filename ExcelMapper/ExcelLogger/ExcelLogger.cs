@@ -8,34 +8,30 @@ using System.IO;
 
 namespace ExcelMapper.Logger
 {
-    public class ExcelLogger : IDisposable
+    public class ExcelLogger: IDisposable
     {
+        #region Fields
         private readonly FileInfo orginalFile;
-        private FileStream _stream;
         private readonly string _resultCol;
-        private string _logFile;
-        private XSSFWorkbook _workBook;
-        private ISheet _worksheet;
+        private readonly XSSFWorkbook _workBook;
+        private readonly ISheet _workSheet;
+        #endregion
 
-        public ExcelLogger(string fileName, string resultCol = null)
+        public ExcelLogger(string fileName, string resultCol)
         {
             orginalFile = new FileInfo(fileName);
             _resultCol = resultCol;
+            _workBook = InitializeSourceFile();
+            _workSheet = _workBook.GetSheetAt(0);
         }
 
-        private void InitializeSourceFile()
+        private XSSFWorkbook InitializeSourceFile()
         {
             try
             {
-                _stream =
-                    File.Open(orginalFile.FullName, FileMode.Open, FileAccess.ReadWrite);
-
-                using (var stream =
-                     File.Open(orginalFile.FullName, FileMode.Open, FileAccess.Read))
-                {
-                    _workBook = new XSSFWorkbook(stream);
-                    _worksheet = _workBook.GetSheetAt(0); //TODO: get sheet index
-                }
+                using var stream =
+                     File.Open(orginalFile.FullName, FileMode.Open, FileAccess.Read);
+                return new XSSFWorkbook(stream);
             }
             catch (Exception ex)
             {
@@ -44,23 +40,19 @@ namespace ExcelMapper.Logger
             }
         }
 
-
-
         public void LogInvalidColumns(Dictionary<int, Dictionary<string, CellErrorLevel>> invalidRows, int sheetIndex = 0)
         {
-            // InitializeSourceFile();
-            InitializeOutputFile();
+            
             foreach (var row in invalidRows)
             {
                 foreach (var col in row.Value)
                 {
-                    _worksheet.Cell(col.Key, row.Key).Colorize(col.Value);
+                    _workSheet?.Cell(col.Key, row.Key).Colorize(col.Value);
                 }
 
-                _worksheet = _workBook[sheetIndex];
                 if (_resultCol != null)
                 {
-                    _worksheet.Cell(_resultCol, row.Key)
+                    _workSheet.Cell(_resultCol, row.Key)
                                 .Colorize(CellErrorLevel.Warning)
                                 .SetCentered()
                                 .SetCellValue("Invalid");
@@ -71,10 +63,11 @@ namespace ExcelMapper.Logger
 
         public void LogFailedRows(Dictionary<int, Exception> failedRows, string message = "Failed")
         {
+            
             foreach (var row in failedRows)
             {
                 var cell = $"{_resultCol}{row.Key}";
-                _worksheet.Cell(cell).Colorize(CellErrorLevel.Danger)
+                _workSheet.Cell(cell).Colorize(CellErrorLevel.Danger)
                             .SetCentered()
                             .SetCellValue(message);
 
@@ -82,23 +75,22 @@ namespace ExcelMapper.Logger
             SaveExcelFile();
         }
 
-        private void InitializeOutputFile()
+       
+        private void SaveExcelFile()
         {
             var logFileName = $"{Path.GetFileNameWithoutExtension(orginalFile.Name)}_{DateTime.Now:hh_mm_ss}.xlsx";
             var filePath = Path.Combine(orginalFile.Directory.FullName, logFileName);
-            _logFile = filePath;
-        }
-
-        private void SaveExcelFile()
-        {
             using var stream =
-                   File.Open(_logFile, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                   File.Open(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
             _workBook.Write(stream);
         }
 
         public void Dispose()
         {
-            _stream.Dispose();
+            if (_workBook != null)
+            {
+                _workBook.Close();
+            }
         }
     }
 }

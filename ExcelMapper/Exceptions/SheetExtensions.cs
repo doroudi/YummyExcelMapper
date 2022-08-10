@@ -14,7 +14,7 @@ namespace ExcelMapper.Exceptions
             return activeRow.GetCell(cellReference.Col);
         }
 
-        public static ICell Cell(this ISheet @this, string col,int row)
+        public static ICell Cell(this ISheet @this, string col, int row)
         {
             try
             {
