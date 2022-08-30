@@ -90,7 +90,6 @@ namespace ExcelMapper.ExcelParser
             try
             {
                 return new ExcelReader(_file.FullName)[_sheetIndex];
-
             }
             catch (Exception ex)
             {

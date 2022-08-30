@@ -19,7 +19,7 @@ logger.LogInvalidColumns(parser.InvalidRows);
 
 var exporter = new ExcelWriter();
 
-exporter.AddSheet<Employee>(
+exporter.AddSheet(
             new ExportProfile(exporter.WorkBook), 
             x => x.SetRtl().UseData(employees).UseDefaultHeaderStyle().Build()
         );

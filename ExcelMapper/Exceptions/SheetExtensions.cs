@@ -14,7 +14,7 @@ namespace ExcelMapper.Exceptions
             return activeRow.GetCell(cellReference.Col);
         }
 
-        public static ICell Cell(this ISheet @this, string col, int row)
+        public static ICell? Cell(this ISheet @this, string col, int row)
         {
             try
             {
@@ -25,21 +25,20 @@ namespace ExcelMapper.Exceptions
             catch (System.Exception ex)
             {
                 Console.WriteLine(row);
-                throw;
+                return null;
             }
         }
 
+        //private static (int col, int row) ParseCellAddress(string cell)
+        //{
+        //    var regex = "(?<Alpha>[a-zA-Z]*)(?<Numeric>[0-9]*)";
+        //    var match = new Regex(regex).Match(cell);
+        //    return (GetExcelColIndex(match.Groups["Alpha"].Value), int.Parse(match.Groups["Numberic"].Value));
+        //}
 
-        private static (int col, int row) ParseCellAddress(string cell)
-        {
-            var regex = "(?<Alpha>[a-zA-Z]*)(?<Numeric>[0-9]*)";
-            var match = new Regex(regex).Match(cell);
-            return (GetExcelColIndex(match.Groups["Alpha"].Value), int.Parse(match.Groups["Numberic"].Value));
-        }
-
-        private static int GetExcelColIndex(string col)
-        {
-            return new CellReference(col).Col;
-        }
+        //private static int GetExcelColIndex(string col)
+        //{
+        //    return new CellReference(col).Col;
+        //}
     }
 }

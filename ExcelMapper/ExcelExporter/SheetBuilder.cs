@@ -12,7 +12,7 @@ namespace ExcelMapper.ExcelExporter
         private readonly IWorkbook _workBook;
         private readonly IExportMapper<TSource> _mapper;
         public ICollection<RowModel<TSource>> _data;
-        private readonly SheetOptions<TSource>? _options;
+        private readonly SheetOptions<TSource> _options;
         public SheetBuilder(IWorkbook workBook, IExportMapper<TSource> mapper, Action<SheetOptions<TSource>>? options = null)
         {
             _workBook = workBook;
@@ -74,7 +74,7 @@ namespace ExcelMapper.ExcelExporter
 
         public ISheet Build()
         {
-            _sheet = _workBook.CreateSheet(_options.Name);
+            _sheet = _workBook.CreateSheet(_options?.Name ?? "Sheet 1");
 
             if (_options.Rtl)
             {

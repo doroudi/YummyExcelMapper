@@ -11,5 +11,10 @@ namespace ExcelMapper.Models
 
         public int Row { get; set; }
         public TSource Source { get; set; }
+
+        public override string ToString()
+        {
+            return Source?.ToString() ?? base.ToString();
+        }
     }
 }

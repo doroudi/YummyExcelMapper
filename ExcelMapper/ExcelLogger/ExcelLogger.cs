@@ -1,5 +1,6 @@
 ﻿using ExcelMapper.Exceptions;
 using ExcelMapper.Models;
+using ExcelMapper.Util;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System;
@@ -8,30 +9,31 @@ using System.IO;
 
 namespace ExcelMapper.Logger
 {
-    public class ExcelLogger: IDisposable
+    public class ExcelLogger : IDisposable
     {
-        #region Fields
         private readonly FileInfo orginalFile;
+        private FileStream _stream;
         private readonly string _resultCol;
-        private readonly XSSFWorkbook _workBook;
-        private readonly ISheet _workSheet;
-        #endregion
+        private string _logFile;
+        private XSSFWorkbook _workBook;
+        private ISheet _worksheet;
+        private ICellStyle _warningStyle;
 
-        public ExcelLogger(string fileName, string resultCol)
+        public ExcelLogger(string fileName, string resultCol = "A")
         {
             orginalFile = new FileInfo(fileName);
             _resultCol = resultCol;
-            _workBook = InitializeSourceFile();
-            _workSheet = _workBook.GetSheetAt(0);
+            InitializeSourceFile();
         }
 
-        private XSSFWorkbook InitializeSourceFile()
+        private void InitializeSourceFile()
         {
             try
             {
                 using var stream =
                      File.Open(orginalFile.FullName, FileMode.Open, FileAccess.Read);
-                return new XSSFWorkbook(stream);
+                _workBook = new XSSFWorkbook(stream);
+                _worksheet = _workBook.GetSheetAt(0); //TODO: get sheet index
             }
             catch (Exception ex)
             {
@@ -40,57 +42,78 @@ namespace ExcelMapper.Logger
             }
         }
 
+
+
         public void LogInvalidColumns(Dictionary<int, Dictionary<string, CellErrorLevel>> invalidRows, int sheetIndex = 0)
         {
-            
+            InitializeOutputFile();
+            InitializeStyles();
             foreach (var row in invalidRows)
             {
                 foreach (var col in row.Value)
                 {
-                    _workSheet?.Cell(col.Key, row.Key).Colorize(col.Value);
+                    _worksheet.Cell(col.Key, row.Key + 1)?.ApplyStyle(_warningStyle);
                 }
 
                 if (_resultCol != null)
                 {
-                    _workSheet.Cell(_resultCol, row.Key)
-                                .Colorize(CellErrorLevel.Warning)
-                                .SetCentered()
-                                .SetCellValue("Invalid");
+                    var cell = _worksheet.Cell(_resultCol, row.Key + 1);
+                    if (cell == null)
+                    {
+                        cell = _worksheet.GetRow(row.Key).CreateCell(_resultCol);
+                    }
+
+                    cell.SetCentered()
+                        .ApplyStyle(_warningStyle)
+                        .SetCellValue("Invalid");
+
                 }
             }
             SaveExcelFile();
         }
 
+        private void InitializeStyles()
+        {
+            _warningStyle = _workBook.CreateCellStyle();
+            _warningStyle.Alignment = HorizontalAlignment.Center;
+            _warningStyle.FillForegroundColor = IndexedColors.Yellow.Index;
+            _warningStyle.FillPattern = FillPattern.SolidForeground;
+        }
+
         public void LogFailedRows(Dictionary<int, Exception> failedRows, string message = "Failed")
         {
-            
             foreach (var row in failedRows)
             {
-                var cell = $"{_resultCol}{row.Key}";
-                _workSheet.Cell(cell).Colorize(CellErrorLevel.Danger)
+                var cell = _worksheet.Cell(_resultCol, row.Key + 1);
+                if (cell == null)
+                {
+                    cell = _worksheet.GetRow(row.Key).CreateCell(_resultCol);
+                }
+                cell.Colorize(CellErrorLevel.Danger)
                             .SetCentered()
                             .SetCellValue(message);
-
             }
             SaveExcelFile();
         }
 
-       
-        private void SaveExcelFile()
+        private void InitializeOutputFile()
         {
             var logFileName = $"{Path.GetFileNameWithoutExtension(orginalFile.Name)}_{DateTime.Now:hh_mm_ss}.xlsx";
             var filePath = Path.Combine(orginalFile.Directory.FullName, logFileName);
+            _logFile = filePath;
+        }
+
+        private void SaveExcelFile()
+        {
             using var stream =
-                   File.Open(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                File.Open(_logFile, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+
             _workBook.Write(stream);
         }
 
         public void Dispose()
         {
-            if (_workBook != null)
-            {
-                _workBook.Close();
-            }
+            _stream.Dispose();
         }
     }
 }
