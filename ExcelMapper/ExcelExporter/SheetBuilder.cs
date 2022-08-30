@@ -11,20 +11,20 @@ namespace ExcelMapper.ExcelExporter
         private ISheet _sheet;
         private readonly IWorkbook _workBook;
         private readonly IExportMapper<TSource> _mapper;
-        public ICollection<TSource> _data;
+        public ICollection<RowModel<TSource>> _data;
         private readonly SheetOptions<TSource>? _options;
         public SheetBuilder(IWorkbook workBook, IExportMapper<TSource> mapper, Action<SheetOptions<TSource>>? options = null)
         {
             _workBook = workBook;
             _mapper = mapper;
-            _data = new List<TSource>();
+            _data = new List<RowModel<TSource>>();
             _options = new SheetOptions<TSource>(mapper);
             if (options != null)
             {
                 options?.Invoke(_options);
             }
         }
-        public SheetBuilder<TSource> UseData(ICollection<TSource> data)
+        public SheetBuilder<TSource> UseData(ICollection<RowModel<TSource>> data)
         {
             this._data = data;
             return this;
@@ -96,11 +96,10 @@ namespace ExcelMapper.ExcelExporter
 
         private void SetData()
         {
-            var counter = 1;
             foreach (var item in _data)
             {
-                var sheetRow = _sheet.CreateRow(counter++);
-                sheetRow = _mapper.Map(item, sheetRow);
+                var sheetRow = _sheet.CreateRow(item.Row);
+                _mapper.Map(item.Source, sheetRow);
             }
         }
 
