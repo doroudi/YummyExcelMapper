@@ -16,7 +16,6 @@ namespace ExcelMapper.ExcelParser
         #region Fields
         private readonly FileInfo _file;
         private readonly ExcelImportMapper<TSource> _mapper;
-        private ISheet _worksheet;
         private readonly int _sheetIndex;
         #endregion
 
@@ -42,19 +41,18 @@ namespace ExcelMapper.ExcelParser
         /// Get items list from excel file based on mapping profile
         /// </summary>
         /// <returns>List of employees in exel file</returns>
-        public Dictionary<int, TSource> GetItems(int? take = null, int skip = 0)
+        public List<RowModel<TSource>> GetItems(int? take = null, int skip = 0)
         {
-            InitializeExcelFile();
-            var result = new Dictionary<int, TSource>(_worksheet.LastRowNum);
-
+            var workSheet = InitializeExcelFile();
+            var result = new List<RowModel<TSource>>();
             var parallelOptions = new ParallelOptions
             {
                 // it is recommended to use 75% of available CPU cores for parallelism
-                MaxDegreeOfParallelism = 1
-                // Convert.ToInt32(Math.Ceiling(Environment.ProcessorCount * 0.75 * 1.0))
+                // MaxDegreeOfParallelism = 1
+                MaxDegreeOfParallelism = Convert.ToInt32(Math.Ceiling(Environment.ProcessorCount * 0.75 * 1.0))
             };
 
-            var collection = _worksheet.GetAllRows().Skip(skip);
+            var collection = workSheet.GetAllRows().Skip(skip);
             if (take != null)
             {
                 collection = collection.Take((int)take);
@@ -68,8 +66,8 @@ namespace ExcelMapper.ExcelParser
                     if (IgnoreHeader && row.RowNum == 0) { return; }
                     try
                     {
-                        var item = _mapper.Map(_worksheet, row);
-                        result.Add(row.RowNum, item);
+                        var item = _mapper.Map(workSheet, row);
+                        result.Add(new RowModel<TSource> (row.RowNum,item));
                     }
                     catch (ExcelMappingException ex)
                     {
@@ -87,18 +85,19 @@ namespace ExcelMapper.ExcelParser
 
 
         #region Utilities
-        private void InitializeExcelFile()
+        private ISheet InitializeExcelFile()
         {
             try
             {
-                _worksheet = new ExcelReader(_file.FullName)[_sheetIndex];
-
+                return new ExcelReader(_file.FullName)[_sheetIndex];
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
+
+
         #endregion
     }
 }

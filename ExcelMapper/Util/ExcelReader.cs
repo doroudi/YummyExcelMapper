@@ -9,22 +9,17 @@ namespace ExcelMapper.Util
     public class ExcelReader
     {
         private readonly string _path;
-        private bool isInitialized = false;
         private IWorkbook _workBook;
         public ExcelReader(string path)
         {
             _path = path;
+            _workBook = InitializeFile();
         }
 
         public ISheet this[int index]
         {
             get
             {
-                if (!isInitialized)
-                {
-                    InitializeFile();
-                }
-
                 return _workBook.GetSheetAt(index);
             }
         }
@@ -33,24 +28,17 @@ namespace ExcelMapper.Util
         {
             get
             {
-                if (!isInitialized)
-                {
-                    InitializeFile();
-                }
-
                 return _workBook.GetSheet(name);
             }
         }
 
-        public void InitializeFile()
+        public XSSFWorkbook InitializeFile()
         {
             try
             {
                 using var stream =
                     File.Open(_path, FileMode.Open, FileAccess.Read);
-                var workBook = new XSSFWorkbook(stream);
-                _workBook = workBook;
-                isInitialized = true;
+                return new XSSFWorkbook(stream);
             }
             catch (Exception ex)
             {
