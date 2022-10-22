@@ -4,8 +4,9 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Nullable>enable</Nullable>
-      <Authors>Saeid Doroudi</Authors>
-     <Description>Excel Mapping to map Excel file to DTO and vise versa to faciliate import/export functionality</Description>
+    <Authors>Saeid Doroudi</Authors>
+    <Description>Excel Mapping to map Excel file to DTO and vise versa to faciliate import/export functionality</Description>
+    <EnablePackageValidation>true</EnablePackageValidation>
 
     <!-- PackageProjectUrl is different from the repository URL. It can be a documentation
          website or a website explaining the project -->
@@ -14,12 +15,12 @@
     <!-- A list of tags to help the search engine to understand the content of the package -->
     <PackageTags>excel, library</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    
+
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="NPOI" Version="2.5.6" />
+
   </ItemGroup>
 
 </Project>
-  
