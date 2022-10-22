@@ -20,10 +20,10 @@
   <PropertyGroup>
     <Authors>Saeid Doroudi</Authors>
     <Description>Excel Mapping to map Excel file to DTO and vise versa to faciliate import/export functionality</Description>
-    <PackageProjectUrl>https://yummycode.ir</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/doroudi/YummyCode.ExcelMapper</PackageProjectUrl>
     
     <PackageTags>excel, library</PackageTags>
-    <RepositoryUrl>https://github.com/doroudi/ExcelMapper/</RepositoryUrl>
+    <RepositoryUrl>https://github.com/doroudi/YummyCode.ExcelMapper</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
