@@ -6,13 +6,25 @@
     <EnablePackageValidation>true</EnablePackageValidation>
 
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+    <!-- Optional: Embed source files that are not tracked by the source control manager in the PDB -->
+    <!--<EmbedUntrackedSources>true</EmbedUntrackedSources>-->
+
+    <!-- Optional: Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
+    <!--<IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>-->
   </PropertyGroup>
 
   <PropertyGroup>
     <Authors>Saeid Doroudi</Authors>
     <Description>Excel Mapping to map Excel file to DTO and vise versa to faciliate import/export functionality</Description>
-    <!-- <PackageProjectUrl>https://www.yummycode.ir</PackageProjectUrl> -->
+    <PackageProjectUrl>https://yummycode.ir</PackageProjectUrl>
+    
     <PackageTags>excel, library</PackageTags>
+    <RepositoryUrl>https://github.com/doroudi/ExcelMapper/</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
 
@@ -39,7 +51,23 @@
 
   <ItemGroup>
     <PackageReference Include="NPOI" Version="2.5.6" />
+  </ItemGroup>
 
+  <PropertyGroup>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Add a README.md next to the csproj -->
+    <None Include="README.md" Pack="true" PackagePath=""/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>
+<!---->
