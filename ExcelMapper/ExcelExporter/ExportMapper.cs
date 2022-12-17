@@ -1,20 +1,21 @@
 ﻿using ExcelMapper.Models;
-using ExcelMapper.Util;
 using NPOI.SS.UserModel;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Linq;
 
 namespace ExcelMapper.ExcelExporter
 {
     public abstract class ExportMapper<TSource> : IExportMapper<TSource> where TSource : new()
     {
         protected IWorkbook _workbook;
+        private IExportMappingExpression<TSource> _mappingExpression;
+        private Dictionary<int, List<Delegate>> _compiledActions;
+
         public ExportMapper(IWorkbook workbook)
         {
             _workbook = workbook;
         }
-        private IExportMappingExpression<TSource> _mappingExpression;
 
         public List<CellMappingInfo> Mappings =>
             _mappingExpression.Mappings;
@@ -23,31 +24,50 @@ namespace ExcelMapper.ExcelExporter
         {
             var expression = new ExportMappingExpression<TSource>();
             _mappingExpression = expression;
+            _compiledActions = new Dictionary<int, List<Delegate>>();
             return expression;
         }
 
-        public IRow Map(TSource data, IRow row)
+        public void Map(TSource data, IRow row)
         {
+            if (_compiledActions.Count == 0)
+            {
+                CompileMappingActions();
+            }
+
             var mappingCols = _mappingExpression.Mappings;
             foreach (var colMapping in mappingCols)
             {
                 try
                 {
-                    var converted = AddMappingAction(data, colMapping);
+                    var converted = ExecuteMappingAction(data, colMapping);
                     SetCellValue(row, colMapping, converted);
                 }
                 //TODO Check 
                 catch (Exception ex)
                 {
-#if DEBUG
-                    Debugger.Break();
-#endif
-
+                    throw;
                 }
             }
-            return row;
 
         }
+
+        private void CompileMappingActions()
+        {
+            foreach (var mapping in _mappingExpression.Mappings)
+            {
+                if (mapping == null) { continue; }
+                var mappingCompiledActions = new List<Delegate>();
+                foreach (var action in mapping.Actions)
+                    mappingCompiledActions.Add(action.Compile());
+
+                if (mappingCompiledActions.Any())
+                {
+                    _compiledActions.Add(mapping.Column, mappingCompiledActions);
+                }
+            }
+        }
+
 
         private static void SetCellValue(IRow row, CellMappingInfo colMapping, object converted)
         {
@@ -62,7 +82,7 @@ namespace ExcelMapper.ExcelExporter
                 cellValue = colMapping.DefaultValue;
 
             // TODO: should check for value is correct column name in excel
-            if (colMapping.Column == null) return;
+            if (colMapping.Column < 0) return;
 
             var cell = row.CreateCell(colMapping.Column);
             if (colMapping.Style != null)
@@ -71,79 +91,29 @@ namespace ExcelMapper.ExcelExporter
             cell.SetCellValue(cellValue);
         }
 
-        private static object AddMappingAction(TSource data, CellMappingInfo mapping)
+        private object ExecuteMappingAction(TSource data, CellMappingInfo mapping)
         {
-            data = data ?? throw new ArgumentNullException(nameof(data));
-            mapping = mapping ?? throw new ArgumentNullException(nameof(mapping));
-
+            //data = data ?? throw new ArgumentNullException(nameof(data));
+            //mapping = mapping ?? throw new ArgumentNullException(nameof(mapping));
             var value = data?.GetType().GetProperty(mapping.Property?.Name).GetValue(data, null);
-            object converted = value ?? string.Empty;
-            if (mapping.Actions != null)
-                foreach (var action in mapping.Actions)
-                    converted = action.Compile().DynamicInvoke(value);
+            if (!_compiledActions.ContainsKey(mapping.Column)) return value;
+            object converted = value;
+            foreach (var action in _compiledActions[mapping.Column])
+            {
+                converted = action.DynamicInvoke(converted);
+            }
 
             return converted;
         }
 
 
-        public IRow MapHeader(IRow headerRow)
+        public void MapHeader(ref IRow headerRow)
         {
             var mappingCols = _mappingExpression.Mappings;
             foreach (var mapping in mappingCols)
             {
                 headerRow.CreateCell(mapping.Column).SetCellValue(mapping.Title);
             }
-
-            return headerRow;
         }
-        #region CreateStyle
-        //private ICellStyle CreateStyle(IWorkbook workbook, CellStyleOptions style)
-        //{
-        //    var customStyle = workbook.CreateCellStyle();
-        //    if (style.FontFamily != null)
-        //    {
-        //        var font = workbook.GetCustomFont(style.FontFamily);
-        //        customStyle.SetFont(font);
-        //    }
-
-        //    if (style.Alignment != null)
-        //    {
-        //        customStyle.Alignment = style.Alignment.Value;
-        //    }
-
-        //    if (style.VerticalAlignment != null)
-        //    {
-        //        customStyle.VerticalAlignment = style.VerticalAlignment.Value;
-        //    }
-
-        //    if (style.BackgroundColor != null)
-        //    {
-        //        customStyle.FillBackgroundColor = style.BackgroundColor.Index;
-        //    }
-
-        //    if (style.BorderStyle != null)
-        //    {
-        //        customStyle.BorderLeft =
-        //        customStyle.BorderRight =
-        //        customStyle.BorderTop =
-        //        customStyle.BorderBottom =
-        //        BorderStyle.Thin;
-        //    }
-
-        //    if (style.BorderColor != null)
-        //    {
-        //        customStyle.BottomBorderColor =
-        //        customStyle.LeftBorderColor =
-        //        customStyle.RightBorderColor =
-        //        customStyle.TopBorderColor =
-        //            style.BorderColor.Index;
-        //    }
-
-        //    return customStyle;
-
-        //}
-        #endregion
-
-
     }
 }

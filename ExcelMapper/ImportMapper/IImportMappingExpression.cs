@@ -12,5 +12,12 @@ namespace ExcelMapper.ExcelMapper
         List<LambdaExpression> GetActions(PropertyInfo propertyInfo);
         List<LambdaExpression> GetValidations(PropertyInfo propertyInfo);
         List<string> GetIgnoredValues(PropertyInfo propertyInfo);
+
+        // TODO: implement ForAllMemebers
+        //IImportMappingExpression<TDestination> ForAllMembers
+        //    (Action<ImportConfigurationExpression<TDestination>> memberOptions);
+
+        //TODO: implement ForAllOtherMembers
+        // IImportMappingExpression<TDestination> ForAllOtherMembers(Action<ImportConfigurationExpression<TDestination>> memberOptions);
     }
 }

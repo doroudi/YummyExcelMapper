@@ -49,27 +49,23 @@ namespace ExcelMapper.ExcelExporter
 
         public SheetBuilder<TSource> UseDefaultHeaderStyle()
         {
-
             var headerStyle = _workBook.CreateCellStyle();
             headerStyle.Alignment = HorizontalAlignment.Center;
             headerStyle.BorderTop = headerStyle.BorderBottom = headerStyle.BorderLeft = headerStyle.BorderRight = BorderStyle.Thin;
             headerStyle.VerticalAlignment = VerticalAlignment.Center;
             headerStyle.FillForegroundColor = IndexedColors.Grey25Percent.Index;
             headerStyle.FillPattern = FillPattern.SolidForeground;
-            headerStyle.SetFont(_workBook.GetCustomFont("B Nazanin"));
             if (_options != null)
                 _options.HeaderStyle = headerStyle;
-
             return this;
         }
 
         public SheetBuilder<TSource> UseHeaderStyle(CellStyleOptions cellStyle)
         {
-            var headerStyle = _workBook.CreateCellStyle();
-            headerStyle = cellStyle.ConvertToCellStyle(_workBook);
+            var headerStyle = cellStyle.ConvertToExcelCellStyle(_workBook);
             if (_options != null)
                 _options.HeaderStyle = headerStyle;
-            return this; ;
+            return this;
         }
 
         public ISheet Build()
@@ -105,9 +101,8 @@ namespace ExcelMapper.ExcelExporter
 
         private void BuildHeader()
         {
-            // TODO: implement this
             var headerRow = _sheet.CreateRow(0);
-            _mapper.MapHeader(headerRow);
+            _mapper.MapHeader(ref headerRow);
             foreach (var cell in _sheet.GetRow(0))
             {
                 cell.CellStyle = _options.HeaderStyle;

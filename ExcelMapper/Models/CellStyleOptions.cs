@@ -14,7 +14,7 @@ namespace ExcelMapper.Models
         public HorizontalAlignment? Alignment { get; set; }
         public VerticalAlignment? VerticalAlignment { get; set; }
 
-        public ICellStyle ConvertToCellStyle(IWorkbook book)
+        public ICellStyle ConvertToExcelCellStyle(IWorkbook book)
         {
             var style = book.CreateCellStyle();
             if (Alignment != null)

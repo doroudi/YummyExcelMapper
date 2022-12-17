@@ -1,25 +1,22 @@
 ﻿using ExcelMapper.ExcelExporter;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
+using NPOI.XSSF.Streaming;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace ExcelMapper
 {
     public class ExcelWriter
     {
         #region Fields
-        private readonly XSSFWorkbook _workBook;
+        private readonly SXSSFWorkbook _workBook;
         #endregion
 
-        public XSSFWorkbook WorkBook => _workBook;
+        public SXSSFWorkbook WorkBook => _workBook;
 
         #region Constructor
         public ExcelWriter()
         {
-            _workBook = new XSSFWorkbook();
+            _workBook = new SXSSFWorkbook();
         }
         #endregion
 
@@ -27,7 +24,8 @@ namespace ExcelMapper
         /// <summary>
         /// Add new sheet using SheetBuilder
         /// </summary>
-        /// <param name="sheet"></param>
+        /// <param name="mapper">mapper instance of TSource</param>
+        /// <param name="builder">sheet builder</param>
         /// <returns></returns>
         public ExcelWriter AddSheet<TSource>(IExportMapper<TSource> mapper, Action<SheetBuilder<TSource>> builder) where TSource : new()
         {

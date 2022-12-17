@@ -19,14 +19,19 @@ namespace ExcelMapper.ExcelExporter
         /// <summary>
         /// Do mapping operation with configuration applied on MappingExpression
         /// </summary>
-        /// <param name="sheet">Excel Worksheet to map from</param>
-        /// <param name="row">Excel row</param>
+        /// <param name="data">object to map data from it</param>
+        /// <param name="row">Excel row to write mapped data to it</param>
         /// <returns>instance of TDestionation class contains values from mapped from excel</returns>
         /// <exception cref="ExcelMappingException">throws on fail to map some properties from excel file</exception>
-        IRow Map(TDestination data, IRow row);
-
+        void Map(TDestination data, IRow row);
+        /// <summary>
+        /// List of created mappings
+        /// </summary>
         List<CellMappingInfo> Mappings { get; }
-
-        IRow MapHeader(IRow headerRow);
+        /// <summary>
+        /// Create header row
+        /// </summary>
+        /// <param name="headerRow">Excel row for header</param>
+        void MapHeader(ref IRow headerRow);
     }
 }
