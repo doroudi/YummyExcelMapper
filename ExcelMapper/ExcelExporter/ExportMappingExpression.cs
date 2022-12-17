@@ -34,7 +34,8 @@ namespace ExcelMapper.ExcelExporter
             Expression<Func<TDestination, TMember>> destinationMember,
             Action<ExportMemberConfigurationExpression<TDestination, TMember>> memberOptions = null)
         {
-            var config = GetCellConfig(column, destinationMember, memberOptions);
+            var colRef = new CellReference(column);
+            var config = GetCellConfig(colRef.Col, destinationMember, memberOptions); ;
             _memberConfigurations.Add(config);
             return this;
         }
@@ -44,12 +45,12 @@ namespace ExcelMapper.ExcelExporter
            (Expression<Func<TDestination, TMember>> destinationMember,
            Action<ExportMemberConfigurationExpression<TDestination, TMember>> memberOptions = null)
         {
-            var config = GetCellConfig(GetAvailableColumn(), destinationMember, memberOptions);
+            var config = GetCellConfig(_memberConfigurations.Count, destinationMember, memberOptions);
             _memberConfigurations.Add(config);
             return this;
         }
 
-        private CellMappingInfo GetCellConfig<TMember>(string column, Expression<Func<TDestination, TMember>> destinationMember, Action<ExportMemberConfigurationExpression<TDestination, TMember>> memberOptions)
+        private CellMappingInfo GetCellConfig<TMember>(int column, Expression<Func<TDestination, TMember>> destinationMember, Action<ExportMemberConfigurationExpression<TDestination, TMember>> memberOptions)
         {
             var memberName = ((MemberExpression)destinationMember.Body).Member.Name;
             var property = typeof(TDestination).GetProperty(memberName);
@@ -78,13 +79,15 @@ namespace ExcelMapper.ExcelExporter
 
         private string GetAvailableColumn()
         {
-            var lastColumn = _memberConfigurations.LastOrDefault()?.Column;
-            if (lastColumn == null) { return "A"; }
-
-            var cellReference = new CellReference(lastColumn).Col + 1;
-            return ColumnIndexToColumnLetter(cellReference + 1);
+            return ColumnIndexToColumnLetter(_memberConfigurations.Count + 1);
         }
 
+        /// <summary>
+        /// Converts index to excel column name
+        /// for example 0=> A, 33 => AG
+        /// </summary>
+        /// <param name="colIndex">index of column in excel</param>
+        /// <returns>corresponding column name for colIndex</returns>
         private string ColumnIndexToColumnLetter(int colIndex)
         {
             int div = colIndex;
@@ -112,16 +115,11 @@ namespace ExcelMapper.ExcelExporter
                 return _memberConfigurations.FirstOrDefault(x => x.Property.Name == property.Name);
             }
         }
-        public PropertyInfo GetProperty(string col)
-        {
-            return _memberConfigurations.FirstOrDefault(x => x.Column == col).Property;
-        }
 
         public ExportMappingExpression<TDestination> SetDefaultStyle(ICellStyle cellStyle)
         {
             _defaultStyle = cellStyle;
             return this;
         }
-
     }
 }
