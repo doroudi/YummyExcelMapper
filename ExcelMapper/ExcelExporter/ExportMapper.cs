@@ -15,6 +15,8 @@ namespace ExcelMapper.ExcelExporter
         public ExportMapper(IWorkbook workbook)
         {
             _workbook = workbook;
+            _mappingExpression = new ExportMappingExpression<TSource>();
+            _compiledActions = new Dictionary<int, List<Delegate>>();
         }
 
         public List<CellMappingInfo> Mappings =>
@@ -44,12 +46,11 @@ namespace ExcelMapper.ExcelExporter
                     SetCellValue(row, colMapping, converted);
                 }
                 //TODO Check 
-                catch (Exception ex)
+                catch
                 {
                     throw;
                 }
             }
-
         }
 
         private void CompileMappingActions()
@@ -68,9 +69,11 @@ namespace ExcelMapper.ExcelExporter
             }
         }
 
-
         private static void SetCellValue(IRow row, CellMappingInfo colMapping, object converted)
         {
+            // TODO: should check for value is correct column name in excel
+            if (colMapping.Column < 0) return;
+
             string cellValue = string.Empty;
             if (colMapping.ConstValue != null)
                 cellValue = colMapping.ConstValue;
@@ -80,9 +83,6 @@ namespace ExcelMapper.ExcelExporter
 
             else if (colMapping.DefaultValue != null)
                 cellValue = colMapping.DefaultValue;
-
-            // TODO: should check for value is correct column name in excel
-            if (colMapping.Column < 0) return;
 
             var cell = row.CreateCell(colMapping.Column);
             if (colMapping.Style != null)

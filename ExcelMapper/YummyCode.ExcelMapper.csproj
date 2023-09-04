@@ -5,7 +5,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
     <EnablePackageValidation>true</EnablePackageValidation>
-
+    <LangVersion>preview</LangVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <!-- <GeneratePackageOnBuild>true</GeneratePackageOnBuild> -->
@@ -52,7 +52,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <None Include="icon.png" Pack="true" PackagePath=""/>
+    <None Include="icon.png" Pack="true" PackagePath="" />
   </ItemGroup>
   
 
@@ -66,7 +66,7 @@
 
   <ItemGroup>
     <!-- Add a README.md next to the csproj -->
-    <None Include="README.md" Pack="true" PackagePath=""/>
+    <None Include="README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
 

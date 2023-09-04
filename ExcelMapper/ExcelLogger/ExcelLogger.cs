@@ -44,31 +44,32 @@ namespace ExcelMapper.Logger
 
 
 
-        public void LogInvalidColumns(Dictionary<int, Dictionary<string, CellErrorLevel>> invalidRows, int sheetIndex = 0)
+        public void LogInvalidColumns(Dictionary<IRow, ResultState> invalidRows, int sheetIndex = 0)
         {
             InitializeOutputFile();
             InitializeStyles();
-            foreach (var row in invalidRows)
-            {
-                foreach (var col in row.Value)
-                {
-                    _worksheet.Cell(col.Key, row.Key + 1)?.ApplyStyle(_warningStyle);
-                }
+            //foreach (var row in invalidRows)
+            //{
 
-                if (_resultCol != null)
-                {
-                    var cell = _worksheet.Cell(_resultCol, row.Key + 1);
-                    if (cell == null)
-                    {
-                        cell = _worksheet.GetRow(row.Key).CreateCell(_resultCol);
-                    }
+            //    foreach (var col in row.Key)
+            //    {
+            //        _worksheet.Cell(col.Row, row.Key + 1)?.ApplyStyle(_warningStyle);
+            //    }
 
-                    cell.SetCentered()
-                        .ApplyStyle(_warningStyle)
-                        .SetCellValue("Invalid");
+            //    if (_resultCol != null)
+            //    {
+            //        var cell = _worksheet.Cell(_resultCol, row.Key + 1);
+            //        if (cell == null)
+            //        {
+            //            cell = _worksheet.GetRow(row.Key).CreateCell(_resultCol);
+            //        }
 
-                }
-            }
+            //        cell.SetCentered()
+            //            .ApplyStyle(_warningStyle)
+            //            .SetCellValue("Invalid");
+
+            //    }
+            //}
             SaveExcelFile();
         }
 
@@ -89,7 +90,7 @@ namespace ExcelMapper.Logger
                 {
                     cell = _worksheet.GetRow(row.Key).CreateCell(_resultCol);
                 }
-                cell.Colorize(CellErrorLevel.Danger)
+                cell.Colorize(ResultState.Danger)
                             .SetCentered()
                             .SetCellValue(message);
             }

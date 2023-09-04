@@ -1,4 +1,5 @@
-﻿using NPOI.SS.UserModel;
+﻿using ExcelMapper.Exceptions;
+using NPOI.SS.UserModel;
 
 namespace ExcelMapper.ExcelMapper
 {
@@ -18,7 +19,7 @@ namespace ExcelMapper.ExcelMapper
         /// Do mapping operation with configuration applied on MappingExpression
         /// </summary>
         /// <param name="sheet">Excel Worksheet to map from</param>
-        /// <param name="row">Excel row</param>
+        /// <param name="source">Excel row</param>
         /// <returns>instance of TDestionation class contains values from mapped from excel</returns>
         /// <exception cref="ExcelMappingException">throws on fail to map some properties from excel file</exception>
         TDestination Map(ISheet sheet, IRow source);

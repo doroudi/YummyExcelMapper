@@ -1,7 +1,6 @@
 ﻿using NPOI.SS.UserModel;
 using NPOI.SS.Util;
 using System;
-using System.Text.RegularExpressions;
 
 namespace ExcelMapper.Exceptions
 {

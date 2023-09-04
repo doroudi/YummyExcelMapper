@@ -1,5 +1,4 @@
-﻿
-namespace ExcelMapper.Models
+﻿namespace ExcelMapper.Models
 {
     public class RowModel<TSource>
     {

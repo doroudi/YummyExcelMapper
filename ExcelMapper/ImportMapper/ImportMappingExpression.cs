@@ -27,7 +27,7 @@ namespace ExcelMapper.ExcelMapper
             {
                 Actions = expression.Actions,
                 Validations = expression.ValidationActions,
-                IgnoredValues = expression.IgnoredValue
+                IgnoredValues = expression.IgnoredValues
             };
             _memberConfigurations.Add(config);
             return this;

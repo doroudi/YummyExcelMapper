@@ -11,8 +11,7 @@ namespace ExcelMapper.ExcelExporter
 {
     public class ExportMappingExpression<TDestination> : IExportMappingExpression<TDestination>
     {
-        private readonly List<CellMappingInfo> _memberConfigurations =
-           new List<CellMappingInfo>();
+        private readonly List<CellMappingInfo> _memberConfigurations = new ();
         private ICellStyle _defaultStyle;
 
         public List<CellMappingInfo> Mappings => _memberConfigurations;
@@ -26,6 +25,7 @@ namespace ExcelMapper.ExcelExporter
 
         public IExportMappingExpression<TDestination> ForAllOtherMembers(Action<ExportConfigurationExpression<TDestination>> memberOptions)
         {
+            // TODO: implement this
             throw new NotImplementedException();
         }
 

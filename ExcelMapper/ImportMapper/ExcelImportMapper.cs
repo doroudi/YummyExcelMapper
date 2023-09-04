@@ -13,7 +13,7 @@ namespace ExcelMapper.ExcelMapper
     public abstract class ExcelImportMapper<TDestination> : IImportMapper<TDestination> where TDestination : new()
     {
         private IImportMappingExpression<TDestination> _mappingExpression;
-
+       
 
         public IImportMappingExpression<TDestination> CreateMap()
         {
@@ -25,7 +25,7 @@ namespace ExcelMapper.ExcelMapper
         public TDestination Map(ISheet sheet, IRow row)
         {
             var item = new TDestination();
-            var invalidColumns = new Dictionary<string, CellErrorLevel>();
+            var invalidColumns = new Dictionary<string, ResultState>();
             foreach (var propertyInfo in typeof(TDestination).GetProperties())
             {
                 var mappingCol = GetMappingCol(propertyInfo);
@@ -41,7 +41,7 @@ namespace ExcelMapper.ExcelMapper
                 }
                 catch (Exception ex)
                 {
-                    invalidColumns.Add(mappingCol, CellErrorLevel.Danger);
+                    invalidColumns.Add(mappingCol, ResultState.Danger);
                     WriteLine.Error($"error in getting value from {mappingCol + rowNumber} - {ex.Message}");
                     continue;
                 }
@@ -55,7 +55,7 @@ namespace ExcelMapper.ExcelMapper
                 var isValid = Validate(propertyInfo, mappingCol, value);
                 if (!isValid)
                 {
-                    invalidColumns.Add(mappingCol, CellErrorLevel.Warning);
+                    invalidColumns.Add(mappingCol, ResultState.Warning);
                     continue;
                 }
 
@@ -107,21 +107,6 @@ namespace ExcelMapper.ExcelMapper
 
             return true;
         }
-
-        //private string GetValueOfCell(ISheet sheet, string col, int row)
-        //{
-        //    var cell = col + row;
-        //    var activeRow = sheet.GetRow(row);
-
-        //    try
-        //    {
-        //        return activeRow.Cells[col].DisplayText?.Trim();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
 
         private string GetMappingCol(PropertyInfo property)
         {

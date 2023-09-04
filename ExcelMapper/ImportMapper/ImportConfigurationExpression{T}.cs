@@ -1,28 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Linq.Expressions;
 
 namespace ExcelMapper.ExcelMapper
 {
-    public class ImportConfigurationExpression<TDestination>
-    {
-        public ImportConfigurationExpression<TDestination> MapFromAttribute()
-        {
-            return this;
-        }
-    }
-
     public class ExcelMemberConfigurationExpression<TDestination, TMember>
     {
-        public string Column { get; private set; }
-        public string Header { get; set; }
+        public string? Column { get; private set; }
+        public string? Header { get; set; }
         public List<LambdaExpression> Actions { get; private set; } = new List<LambdaExpression>();
         public List<LambdaExpression> ValidationActions { get; private set; } = new List<LambdaExpression>();
         public TMember DefaultValue;
-        public List<string> IgnoredValue { get; private set; } = new List<string>();
+        public List<string> IgnoredValues { get; private set; } = new List<string>();
         public ExcelMemberConfigurationExpression<TDestination, TMember> MapFromCol(string col)
         {
             Column = col;
@@ -57,12 +46,16 @@ namespace ExcelMapper.ExcelMapper
             return this;
         }
 
-        public ExcelMemberConfigurationExpression<TDestination, TMember> UseValidation(Func<string, bool> validationAction)
-        {
-            Expression<Func<string, bool>> expr = (member) =>
-                validationAction(member);
 
-            ValidationActions.Add(expr);
+        public ExcelMemberConfigurationExpression<TDestination, TMember> UseValidation(params Func<string, bool>[] validations)
+        {
+            foreach (var validationAction in validations)
+            {
+                Expression<Func<string, bool>> expr = (member) =>
+                    validationAction(member);
+                ValidationActions.Add(expr);
+            }
+
             return this;
         }
 
@@ -74,22 +67,16 @@ namespace ExcelMapper.ExcelMapper
             ValidationActions.Add(expr);
             return this;
         }
-
-        public ExcelMemberConfigurationExpression<TDestination, TMember> MapFromAttribute()
-        {
-            // TODO: implement this
-            throw new NotImplementedException();
-        }
-
+      
         public ExcelMemberConfigurationExpression<TDestination, TMember> IgnoreValues(params string[] values)
         {
-            IgnoredValue.AddRange(values);
+            IgnoredValues.AddRange(values);
             return this;
         }
 
         public ExcelMemberConfigurationExpression<TDestination, TMember> IgnoreRegularEmptyValues()
         {
-            IgnoredValue.AddRange(new string[] { "", " ", "-", "_", "0" });
+            IgnoredValues.AddRange(new string[] { "", " ", "-", "_", "0" });
             return this;
         }
     }

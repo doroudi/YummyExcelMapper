@@ -4,24 +4,23 @@ using ExcelMapper.Logger;
 using ExcelMapper.Test.MapperProfiles;
 using ExcelMapper.Test.Models;
 
-var fileName = @"AppData\data.xlsx";
-ExcelParser<Employee> parser = new (new FileInfo(fileName), new EmployeeMapperProfile());
-var employees = parser.GetItems();
+var fileName = @"AppData\persons.xlsx";
+ExcelParser<Person> parser = new (new FileInfo(fileName), new EmployeeMapperProfile());
+var people = parser.GetItems();
 
-
-foreach (var emplyee in employees)
+foreach (var person in people)
 {
-    Console.WriteLine(emplyee);
+    Console.WriteLine(person);
 }
 
+// TODO: auto detect last column based on data
 var logger = new ExcelLogger(fileName,"EF");
-logger.LogInvalidColumns(parser.InvalidRows);
+logger.LogInvalidColumns(parser.RowsState);
 
 var exporter = new ExcelWriter();
-
 exporter.AddSheet(
             new ExportProfile(exporter.WorkBook), 
-            x => x.SetRtl().UseData(employees).UseDefaultHeaderStyle().Build()
+            builder => builder.SetRtl().UseData(people).UseDefaultHeaderStyle().Build()
         );
 
-exporter.SaveToFile("D:\\excel\\EXPORT.xlsx");
+exporter.SaveToFile("EXPORT.xlsx");

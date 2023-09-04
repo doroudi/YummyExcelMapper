@@ -6,11 +6,12 @@ namespace ExcelMapper.Exceptions
 {
     public static class CellExtensions
     {
-        public static ICell Colorize(this ICell @this, CellErrorLevel errorLevel)
+        public static ICell Colorize(this ICell @this, ResultState errorLevel)
         {
-            if (@this == null) { return @this; }
+            if (@this == null)
+                throw new ArgumentNullException(nameof(@this));
             @this.CellStyle.FillForegroundColor =
-                (errorLevel == CellErrorLevel.Danger) ?
+                (errorLevel == ResultState.Danger) ?
                     IndexedColors.Red.Index :
                     IndexedColors.Yellow.Index;
             @this.CellStyle.FillPattern = FillPattern.SolidForeground;
@@ -32,7 +33,8 @@ namespace ExcelMapper.Exceptions
 
         public static ICell SetCentered(this ICell @this)
         {
-            if (@this == null) { return @this; }
+            if (@this == null) 
+                throw new ArgumentNullException(nameof(@this));
             @this.CellStyle.Alignment = HorizontalAlignment.Center;
             @this.CellStyle.VerticalAlignment = VerticalAlignment.Center;
             return @this;
@@ -54,7 +56,7 @@ namespace ExcelMapper.Exceptions
                     _ => @this.StringCellValue ?? @this.NumericCellValue.ToString()
                 };
             }
-            catch (Exception ex)
+            catch
             {
                 return @this.StringCellValue;
             }

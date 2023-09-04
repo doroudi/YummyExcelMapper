@@ -24,7 +24,7 @@ namespace ExcelMapper.ExcelExporter
         //public CellStyleOptions? CellStyle { get; private set; } = new CellStyleOptions();
         public string? DefaultValue { get; private set; }
         public string? ConstValue { get; private set; }
-        public List<LambdaExpression>? Actions { get; private set; } = new List<LambdaExpression>();
+        public List<LambdaExpression> Actions { get; private set; } = new List<LambdaExpression>();
 
 
         // TODO: implement this

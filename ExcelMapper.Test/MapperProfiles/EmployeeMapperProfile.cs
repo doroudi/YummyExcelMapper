@@ -4,23 +4,25 @@ using ExcelMapper.Validations;
 
 namespace ExcelMapper.Test.MapperProfiles
 {
-    public class EmployeeMapperProfile : ExcelImportMapper<Employee>
+    public class EmployeeMapperProfile : ExcelImportMapper<Person>
     {
         public EmployeeMapperProfile()
         {
             CreateMap()
                 .ForMember(x => x.Id,
-                        opt => opt.MapFromCol("A").UseValidation(GeneralValidations.NotNull))
+                        opt => opt.MapFromCol("A").UseValidation(Rules.NotNull))
                 .ForMember(x => x.Name,
-                        opt => opt.MapFromCol("B").UseValidation(GeneralValidations.NotNull))
+                        opt => opt.MapFromCol("B").UseValidation(Rules.NotNull))
                 .ForMember(x => x.Family,
-                        opt => opt.MapFromCol("C").UseValidation(GeneralValidations.NotNull))
-                .ForMember(x => x.JoinDate,
-                        opt => opt.MapFromCol("D").UseValidation(GeneralValidations.NotNull))
+                        opt => opt.MapFromCol("C").UseValidation(Rules.NotNull))
+                .ForMember(x => x.BirthDate, 
+                        opt => opt.MapFromCol("D").IgnoreRegularEmptyValues().UseValidation(Rules.NotNull, Rules.Date))
                 .ForMember(x => x.NationalId,
-                        opt => opt.MapFromCol("E").UseValidation(GeneralValidations.NotNull))
+                        opt => opt.MapFromCol("E").UseValidation(Rules.NotNull))
+                .ForMember(x => x.Mobile,
+                        opt => opt.MapFromCol("G"))
                 .ForMember(x => x.Address,
-                        opt => opt.MapFromCol("F").UseValidation(GeneralValidations.NotNull));
+                        opt => opt.MapFromCol("F").UseValidation(Rules.NotNull));
         }
     }
 }

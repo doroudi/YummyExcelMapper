@@ -16,10 +16,11 @@ namespace ExcelMapper.ExcelParser
         #region Fields
         private readonly FileInfo _file;
         private readonly ExcelImportMapper<TSource> _mapper;
+        private readonly Dictionary<IRow, ResultState> _rowsState = new();
         private readonly int _sheetIndex;
         #endregion
 
-        public Dictionary<int, Dictionary<string, CellErrorLevel>> InvalidRows;
+        //public Dictionary<int, Dictionary<string, CellState>> InvalidRows;
         public bool IgnoreHeader { get; private set; } = true;
 
         public FileInfo ActiveFile
@@ -33,7 +34,7 @@ namespace ExcelMapper.ExcelParser
         {
             _file = file;
             _mapper = mapper;
-            InvalidRows = new Dictionary<int, Dictionary<string, CellErrorLevel>>();
+            //InvalidRows = new Dictionary<int, Dictionary<string, CellState>>();
             _sheetIndex = sheetIndex;
         }
 
@@ -67,14 +68,17 @@ namespace ExcelMapper.ExcelParser
                     try
                     {
                         var item = _mapper.Map(workSheet, row);
-                        result.Add(new RowModel<TSource> (row.RowNum,item));
+                        result.Add(new RowModel<TSource>(row.RowNum, item));
+                        _rowsState.TryAdd(row, ResultState.Success);
                     }
                     catch (ExcelMappingException ex)
                     {
-                        InvalidRows.Add(row.RowNum, ex.Cols);
+                        _rowsState.TryAdd(row, ResultState.Warning);
+                        //InvalidRows.Add(row.RowNum, ex.Cols);
                     }
                     catch (Exception ex)
                     {
+                        _rowsState.TryAdd(row, ResultState.Warning);
                         WriteLine.Error($"error in converting data at row  {row.RowNum} - {ex.Message}");
                         return;
                     }
@@ -83,6 +87,21 @@ namespace ExcelMapper.ExcelParser
             return result;
         }
 
+        public Dictionary<IRow, ResultState> RowsState
+        {
+            get
+            {
+                return _rowsState;
+            }
+        }
+
+        public IEnumerable<KeyValuePair<IRow, ResultState>> FailedRows
+        {
+            get
+            {
+                return _rowsState.Where(x => x.Value == ResultState.Warning);
+            }
+        }
 
         #region Utilities
         private ISheet InitializeExcelFile()
