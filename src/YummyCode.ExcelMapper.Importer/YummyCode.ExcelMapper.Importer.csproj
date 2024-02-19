@@ -1,0 +1,77 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>enable</Nullable>
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <LangVersion>latest</LangVersion>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <RootNamespace>YummyCode.ExcelMapper</RootNamespace>
+    <!-- <GeneratePackageOnBuild>true</GeneratePackageOnBuild> -->
+
+    <!-- Optional: Embed source files that are not tracked by the source control manager in the PDB -->
+    <!--<EmbedUntrackedSources>true</EmbedUntrackedSources>-->
+
+    <!-- Optional: Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
+    <!--<IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>-->
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>Saeid Doroudi</Authors>
+    <Description>Excel Mapping to map Excel file to DTO and vise versa to faciliate import/export functionality</Description>
+    <PackageProjectUrl>https://github.com/doroudi/YummyCode.ExcelMapper</PackageProjectUrl>
+    
+    <PackageTags>excel, library</PackageTags>
+    <RepositoryUrl>https://github.com/doroudi/YummyCode.ExcelMapper</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NPOI" Version="2.6.2" />
+  </ItemGroup>
+
+
+  <PropertyGroup>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+
+    <!-- If all members are not documented, you can disable the compiler warnings -->
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <PackageIcon>icon.png</PackageIcon>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <None Include="icon.png" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Add a README.md next to the csproj -->
+    <None Include="README.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\YummyCode.ExcelMapper.Logger\YummyCode.ExcelMapper.Logger.csproj" />
+    <ProjectReference Include="..\YummyCode.ExcelMapper.Shared\YummyCode.ExcelMapper.Shared.csproj" />
+  </ItemGroup>
+
+
+
+</Project>
+<!---->

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32407.343
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YummyCode.ExcelMapper", "ExcelMapper\YummyCode.ExcelMapper.csproj", "{B72766E3-836D-48EA-ABF4-38C1F16F0DCE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YummyCode.ExcelMapper.Importer", "src\YummyCode.ExcelMapper.Importer\YummyCode.ExcelMapper.Importer.csproj", "{B72766E3-836D-48EA-ABF4-38C1F16F0DCE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5D816DBB-F928-4AAC-AC10-B4170D353844}"
 	ProjectSection(SolutionItems) = preProject
@@ -12,7 +12,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YummyCode.ExcelMapper.Test", "ExcelMapper.Test\YummyCode.ExcelMapper.Test.csproj", "{8D343B10-CD04-43A2-A70B-8BED34DCB78E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YummyCode.ExcelMapper.Test", "test\ExcelMapper.Test\YummyCode.ExcelMapper.Test.csproj", "{8D343B10-CD04-43A2-A70B-8BED34DCB78E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YummyCode.ExcelMapper.Exporter", "src\YummyCode.ExcelMapper.Exporter\YummyCode.ExcelMapper.Exporter.csproj", "{B051350E-13E1-4A0C-B1DE-C56DF0109A8E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YummyCode.ExcelMapper.Shared", "src\YummyCode.ExcelMapper.Shared\YummyCode.ExcelMapper.Shared.csproj", "{E3C9F767-3DA2-4C10-BC19-BF49E63243C5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YummyCode.ExcelMapper.Logger", "src\YummyCode.ExcelMapper.Logger\YummyCode.ExcelMapper.Logger.csproj", "{2CDAA3F2-2812-44C5-AD8B-27B24CC0D2F4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5DD08BCF-3A60-4EFF-A1AE-C90E51E2B69F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{10C4E5AE-0A60-4978-B708-3A6076ACEE10}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,9 +38,28 @@ Global
 		{8D343B10-CD04-43A2-A70B-8BED34DCB78E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D343B10-CD04-43A2-A70B-8BED34DCB78E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D343B10-CD04-43A2-A70B-8BED34DCB78E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B051350E-13E1-4A0C-B1DE-C56DF0109A8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B051350E-13E1-4A0C-B1DE-C56DF0109A8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B051350E-13E1-4A0C-B1DE-C56DF0109A8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B051350E-13E1-4A0C-B1DE-C56DF0109A8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3C9F767-3DA2-4C10-BC19-BF49E63243C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3C9F767-3DA2-4C10-BC19-BF49E63243C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3C9F767-3DA2-4C10-BC19-BF49E63243C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3C9F767-3DA2-4C10-BC19-BF49E63243C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CDAA3F2-2812-44C5-AD8B-27B24CC0D2F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CDAA3F2-2812-44C5-AD8B-27B24CC0D2F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CDAA3F2-2812-44C5-AD8B-27B24CC0D2F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CDAA3F2-2812-44C5-AD8B-27B24CC0D2F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B72766E3-836D-48EA-ABF4-38C1F16F0DCE} = {5DD08BCF-3A60-4EFF-A1AE-C90E51E2B69F}
+		{8D343B10-CD04-43A2-A70B-8BED34DCB78E} = {10C4E5AE-0A60-4978-B708-3A6076ACEE10}
+		{B051350E-13E1-4A0C-B1DE-C56DF0109A8E} = {5DD08BCF-3A60-4EFF-A1AE-C90E51E2B69F}
+		{E3C9F767-3DA2-4C10-BC19-BF49E63243C5} = {5DD08BCF-3A60-4EFF-A1AE-C90E51E2B69F}
+		{2CDAA3F2-2812-44C5-AD8B-27B24CC0D2F4} = {5DD08BCF-3A60-4EFF-A1AE-C90E51E2B69F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4821BF82-0B22-4859-8E62-89F8D07A2938}
