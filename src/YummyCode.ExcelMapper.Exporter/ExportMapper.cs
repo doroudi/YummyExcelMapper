@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NPOI.SS.UserModel;
-<<<<<<<< HEAD:src/YummyCode.ExcelMapper.Exporter/ExportMapper.cs
-========
-using YummyCode.ExcelMapper.Exporter.Models;
->>>>>>>> 452e969fed67e87b821b76b42a2de365434c852f:YummyCode.ExcelMapper.Exporter/ExportMapper.cs
+
 using YummyCode.ExcelMapper.Shared.Models;
 
 namespace YummyCode.ExcelMapper.Exporter
