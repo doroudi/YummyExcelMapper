@@ -1,13 +1,12 @@
-﻿using ExcelMapper.Exceptions;
-using ExcelMapper.Models;
-using ExcelMapper.Util;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using YummyCode.ExcelMapper.Shared.Extensions;
+using YummyCode.ExcelMapper.Shared.Models;
 
-namespace ExcelMapper.Logger
+namespace YummyCode.ExcelMapper.Logger
 {
     public class ExcelLogger : IDisposable
     {

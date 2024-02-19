@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ExcelMapper.Util
+namespace YummyCode.ExcelMapper.Shared.Utilities
 {
     public static class WriteLine
     {

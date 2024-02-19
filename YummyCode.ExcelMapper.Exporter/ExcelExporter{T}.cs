@@ -1,25 +1,13 @@
-﻿using ExcelMapper.ExcelExporter;
-using NPOI.XSSF.Streaming;
-using System;
+﻿using System;
 using System.IO;
+using NPOI.XSSF.Streaming;
 
-namespace ExcelMapper
+namespace YummyCode.ExcelMapper.Exporter
 {
     public class ExcelWriter
     {
-        #region Fields
-        private readonly SXSSFWorkbook _workBook;
-        #endregion
-
-        public SXSSFWorkbook WorkBook => _workBook;
-
-        #region Constructor
-        public ExcelWriter()
-        {
-            _workBook = new SXSSFWorkbook();
-        }
-        #endregion
-
+        public SXSSFWorkbook WorkBook { get; } = new();
+        
         #region Methods
         /// <summary>
         /// Add new sheet using SheetBuilder
@@ -29,7 +17,7 @@ namespace ExcelMapper
         /// <returns></returns>
         public ExcelWriter AddSheet<TSource>(IExportMapper<TSource> mapper, Action<SheetBuilder<TSource>> builder) where TSource : new()
         {
-            builder.Invoke(new SheetBuilder<TSource>(_workBook, mapper));
+            builder.Invoke(new SheetBuilder<TSource>(WorkBook, mapper));
             return this;
         }
 
@@ -40,8 +28,8 @@ namespace ExcelMapper
         /// <returns>Memory stream contains excel file's outputs</returns>
         public MemoryStream GetFileContent()
         {
-            using var memoryData = new MemoryStream();
-            _workBook.Write(memoryData);
+            var memoryData = new MemoryStream();
+            WorkBook.Write(memoryData);
             GC.Collect();
 
             return memoryData;
@@ -50,7 +38,7 @@ namespace ExcelMapper
         public void SaveToFile(string fileName)
         {
             using var fileStream = new FileStream(fileName, FileMode.Create, FileAccess.Write);
-            _workBook.Write(fileStream);
+            WorkBook.Write(fileStream);
             GC.Collect();
         }
 

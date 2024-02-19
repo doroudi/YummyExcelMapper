@@ -1,13 +1,9 @@
 ﻿using System;
 
-namespace ExcelMapper.Models
+namespace YummyCode.ExcelMapper.Models
 {
-    public sealed class ExcelColAttribute : Attribute
+    public sealed class ExcelColAttribute(string col) : Attribute
     {
-        public string Col { get; set; }
-        public ExcelColAttribute(string col)
-        {
-            Col = col;
-        }
+        public string Col { get; set; } = col;
     }
 }

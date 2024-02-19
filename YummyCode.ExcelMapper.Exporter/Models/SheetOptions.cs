@@ -1,6 +1,6 @@
 ﻿using NPOI.SS.UserModel;
 
-namespace ExcelMapper.ExcelExporter
+namespace YummyCode.ExcelMapper.Exporter
 {
     public class SheetOptions<TSource> where TSource : new()
     {

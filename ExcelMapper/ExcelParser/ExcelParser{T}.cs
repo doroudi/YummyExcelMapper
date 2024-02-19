@@ -1,15 +1,18 @@
-﻿using ExcelMapper.ExcelMapper;
-using ExcelMapper.Exceptions;
-using ExcelMapper.Models;
-using ExcelMapper.Util;
-using NPOI.SS.UserModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ExcelMapper.ExcelMapper;
+using ExcelMapper.Util;
+using NPOI.SS.UserModel;
+using YummyCode.ExcelMapper.Exceptions;
+using YummyCode.ExcelMapper.ImportMapper;
+using YummyCode.ExcelMapper.Shared.Extensions;
+using YummyCode.ExcelMapper.Shared.Models;
+using YummyCode.ExcelMapper.Shared.Utilities;
 
-namespace ExcelMapper.ExcelParser
+namespace YummyCode.ExcelMapper.ExcelParser
 {
     public class ExcelParser<TSource> where TSource : new()
     {

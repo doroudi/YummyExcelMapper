@@ -1,10 +1,10 @@
-﻿using ExcelMapper;
-using ExcelMapper.ExcelParser;
-using ExcelMapper.Logger;
-using ExcelMapper.Test.MapperProfiles;
-using ExcelMapper.Test.Models;
+﻿using ExcelMapper.Test.Models;
+using YummyCode.ExcelMapper.ExcelParser;
+using YummyCode.ExcelMapper.Exporter;
+using YummyCode.ExcelMapper.Logger;
+using YummyCode.ExcelMapper.Test.MapperProfiles;
 
-var fileName = @"AppData\persons.xlsx";
+const string fileName = @"AppData\persons.xlsx";
 ExcelParser<Person> parser = new (new FileInfo(fileName), new EmployeeMapperProfile());
 var people = parser.GetItems();
 

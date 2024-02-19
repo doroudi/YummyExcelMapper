@@ -5,9 +5,10 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
     <EnablePackageValidation>true</EnablePackageValidation>
-    <LangVersion>preview</LangVersion>
+    <LangVersion>latest</LangVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <RootNamespace>YummyCode.ExcelMapper</RootNamespace>
     <!-- <GeneratePackageOnBuild>true</GeneratePackageOnBuild> -->
 
     <!-- Optional: Embed source files that are not tracked by the source control manager in the PDB -->
@@ -33,6 +34,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="NPOI" Version="2.6.2" />
   </ItemGroup>
 
 
@@ -54,11 +56,6 @@
   <ItemGroup>
     <None Include="icon.png" Pack="true" PackagePath="" />
   </ItemGroup>
-  
-
-  <ItemGroup>
-    <PackageReference Include="NPOI" Version="2.5.6" />
-  </ItemGroup>
 
   <PropertyGroup>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -67,6 +64,11 @@
   <ItemGroup>
     <!-- Add a README.md next to the csproj -->
     <None Include="README.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\YummyCode.ExcelMapper.Logger\YummyCode.ExcelMapper.Logger.csproj" />
+    <ProjectReference Include="..\YummyCode.ExcelMapper.Shared\YummyCode.ExcelMapper.Shared.csproj" />
   </ItemGroup>
 
 

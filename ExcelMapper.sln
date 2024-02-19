@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32407.343
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YummyCode.ExcelMapper", "ExcelMapper\YummyCode.ExcelMapper.csproj", "{B72766E3-836D-48EA-ABF4-38C1F16F0DCE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YummyCode.ExcelMapper.Importer", "ExcelMapper\YummyCode.ExcelMapper.Importer.csproj", "{B72766E3-836D-48EA-ABF4-38C1F16F0DCE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5D816DBB-F928-4AAC-AC10-B4170D353844}"
 	ProjectSection(SolutionItems) = preProject
@@ -13,6 +13,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YummyCode.ExcelMapper.Test", "ExcelMapper.Test\YummyCode.ExcelMapper.Test.csproj", "{8D343B10-CD04-43A2-A70B-8BED34DCB78E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YummyCode.ExcelMapper.Exporter", "YummyCode.ExcelMapper.Exporter\YummyCode.ExcelMapper.Exporter.csproj", "{B051350E-13E1-4A0C-B1DE-C56DF0109A8E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YummyCode.ExcelMapper.Shared", "YummyCode.ExcelMapper.Shared\YummyCode.ExcelMapper.Shared.csproj", "{E3C9F767-3DA2-4C10-BC19-BF49E63243C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YummyCode.ExcelMapper.Logger", "YummyCode.ExcelMapper.Logger\YummyCode.ExcelMapper.Logger.csproj", "{2CDAA3F2-2812-44C5-AD8B-27B24CC0D2F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,6 +34,18 @@ Global
 		{8D343B10-CD04-43A2-A70B-8BED34DCB78E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D343B10-CD04-43A2-A70B-8BED34DCB78E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D343B10-CD04-43A2-A70B-8BED34DCB78E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B051350E-13E1-4A0C-B1DE-C56DF0109A8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B051350E-13E1-4A0C-B1DE-C56DF0109A8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B051350E-13E1-4A0C-B1DE-C56DF0109A8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B051350E-13E1-4A0C-B1DE-C56DF0109A8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3C9F767-3DA2-4C10-BC19-BF49E63243C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3C9F767-3DA2-4C10-BC19-BF49E63243C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3C9F767-3DA2-4C10-BC19-BF49E63243C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3C9F767-3DA2-4C10-BC19-BF49E63243C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CDAA3F2-2812-44C5-AD8B-27B24CC0D2F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CDAA3F2-2812-44C5-AD8B-27B24CC0D2F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CDAA3F2-2812-44C5-AD8B-27B24CC0D2F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CDAA3F2-2812-44C5-AD8B-27B24CC0D2F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,15 +1,11 @@
-﻿using ExcelMapper.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using YummyCode.ExcelMapper.Shared.Models;
 
-namespace ExcelMapper.Exceptions
+namespace YummyCode.ExcelMapper.Exceptions
 {
-    public class ExcelMappingException : Exception
+    public class ExcelMappingException(Dictionary<string, ResultState> cols) : Exception
     {
-        public Dictionary<string, ResultState> Cols { get; set; }
-        public ExcelMappingException(Dictionary<string, ResultState> cols)
-        {
-            Cols = cols;
-        }
+        public Dictionary<string, ResultState> Cols { get; set; } = cols;
     }
 }

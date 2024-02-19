@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ExcelMapper.Validations
+namespace YummyCode.ExcelMapper.Validations
 {
     public class Rules
     {

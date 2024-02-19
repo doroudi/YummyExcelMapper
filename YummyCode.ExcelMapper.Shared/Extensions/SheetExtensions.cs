@@ -1,11 +1,19 @@
-﻿using NPOI.SS.UserModel;
+﻿using System;
+using System.Collections.Generic;
+using NPOI.SS.UserModel;
 using NPOI.SS.Util;
-using System;
 
-namespace ExcelMapper.Exceptions
+namespace YummyCode.ExcelMapper.Shared.Extensions
 {
     public static class SheetExtensions
     {
+        public static IEnumerable<IRow> GetAllRows(this ISheet sheet)
+        {
+            for (var i = 0; i < sheet.LastRowNum; i++)
+            {
+                yield return sheet.GetRow(i);
+            }
+        }
         public static ICell Cell(this ISheet @this, string cell)
         {
             var cellReference = new CellReference(cell);

@@ -1,8 +1,9 @@
-﻿using ExcelMapper.Models;
+﻿using System.Collections.Generic;
 using NPOI.SS.UserModel;
-using System.Collections.Generic;
+using YummyCode.ExcelMapper.Exporter.Models;
+using YummyCode.ExcelMapper.Shared.Models;
 
-namespace ExcelMapper.ExcelExporter
+namespace YummyCode.ExcelMapper.Exporter
 {
     /// <summary>
     /// Mapper class for create map between POCO and Excel file

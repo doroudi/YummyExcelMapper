@@ -1,19 +1,23 @@
-﻿using ExcelMapper.Exceptions;
-using ExcelMapper.Models;
-using ExcelMapper.Util;
-using NPOI.SS.UserModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using ExcelMapper.ExcelMapper;
+using ExcelMapper.Util;
+using NPOI.SS.UserModel;
+using YummyCode.ExcelMapper.Exceptions;
+using YummyCode.ExcelMapper.Shared.Extensions;
+using YummyCode.ExcelMapper.Shared.Models;
+using YummyCode.ExcelMapper.Shared.Utilities;
 
-namespace ExcelMapper.ExcelMapper
+namespace YummyCode.ExcelMapper.ImportMapper
 {
     public abstract class ExcelImportMapper<TDestination> : IImportMapper<TDestination> where TDestination : new()
     {
         private IImportMappingExpression<TDestination> _mappingExpression;
-       
+
 
         public IImportMappingExpression<TDestination> CreateMap()
         {
@@ -63,13 +67,8 @@ namespace ExcelMapper.ExcelMapper
                 try
                 {
                     var actions = GetMappingActions(propertyInfo);
-                    object converted = value;
-                    foreach (var action in actions)
-                    {
-
-                        converted = action.Compile().DynamicInvoke(converted);
-
-                    }
+                    var converted = actions.Aggregate<LambdaExpression?, object>(value, (current, action) => 
+                        action.Compile().DynamicInvoke(current));
                     TypeConverter.SetValue(item, propertyInfo.Name, converted);
                 }
                 catch (Exception ex)
@@ -113,7 +112,7 @@ namespace ExcelMapper.ExcelMapper
             return _mappingExpression.GetCol(property);
         }
 
-        private List<LambdaExpression> GetMappingActions(PropertyInfo property)
+        private IEnumerable<LambdaExpression> GetMappingActions(PropertyInfo property)
         {
             return _mappingExpression.GetActions(property);
         }

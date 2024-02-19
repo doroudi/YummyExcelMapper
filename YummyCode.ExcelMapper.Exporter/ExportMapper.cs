@@ -1,20 +1,21 @@
-﻿using ExcelMapper.Models;
-using NPOI.SS.UserModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NPOI.SS.UserModel;
+using YummyCode.ExcelMapper.Exporter.Models;
+using YummyCode.ExcelMapper.Shared.Models;
 
-namespace ExcelMapper.ExcelExporter
+namespace YummyCode.ExcelMapper.Exporter
 {
     public abstract class ExportMapper<TSource> : IExportMapper<TSource> where TSource : new()
     {
-        protected IWorkbook _workbook;
+        // protected IWorkbook Workbook;
         private IExportMappingExpression<TSource> _mappingExpression;
         private Dictionary<int, List<Delegate>> _compiledActions;
 
         public ExportMapper(IWorkbook workbook)
         {
-            _workbook = workbook;
+            // Workbook = workbook;
             _mappingExpression = new ExportMappingExpression<TSource>();
             _compiledActions = new Dictionary<int, List<Delegate>>();
         }
@@ -58,9 +59,7 @@ namespace ExcelMapper.ExcelExporter
             foreach (var mapping in _mappingExpression.Mappings)
             {
                 if (mapping == null) { continue; }
-                var mappingCompiledActions = new List<Delegate>();
-                foreach (var action in mapping.Actions)
-                    mappingCompiledActions.Add(action.Compile());
+                var mappingCompiledActions = mapping.Actions.Select(action => action.Compile()).ToList();
 
                 if (mappingCompiledActions.Any())
                 {
@@ -74,7 +73,7 @@ namespace ExcelMapper.ExcelExporter
             // TODO: should check for value is correct column name in excel
             if (colMapping.Column < 0) return;
 
-            string cellValue = string.Empty;
+            var cellValue = string.Empty;
             if (colMapping.ConstValue != null)
                 cellValue = colMapping.ConstValue;
 
@@ -97,9 +96,10 @@ namespace ExcelMapper.ExcelExporter
             //mapping = mapping ?? throw new ArgumentNullException(nameof(mapping));
             var value = data?.GetType().GetProperty(mapping.Property?.Name).GetValue(data, null);
             if (!_compiledActions.ContainsKey(mapping.Column)) return value;
-            object converted = value;
-            foreach (var action in _compiledActions[mapping.Column])
+            var converted = value;
+            for (var i = 0; i < _compiledActions[mapping.Column].Count; i++)
             {
+                var action = _compiledActions[mapping.Column][i];
                 converted = action.DynamicInvoke(converted);
             }
 
@@ -112,7 +112,17 @@ namespace ExcelMapper.ExcelExporter
             var mappingCols = _mappingExpression.Mappings;
             foreach (var mapping in mappingCols)
             {
-                headerRow.CreateCell(mapping.Column).SetCellValue(mapping.Title);
+                headerRow.CreateCell(mapping.Column).SetCellValue(mapping.Header);
+            }
+        }
+        
+        public IEnumerable<string> GetMappingColumns()
+        {
+            var items = _mappingExpression.Mappings;
+            //items.Reverse();
+            foreach (var item in items)
+            {
+                yield return item.Header ?? item.Property?.Name ?? "";
             }
         }
     }

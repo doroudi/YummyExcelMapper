@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using ExcelMapper.Models;
+using ExcelMapper.ExcelMapper;
+using YummyCode.ExcelMapper.Models;
 
-namespace ExcelMapper.ExcelMapper
+namespace YummyCode.ExcelMapper.ImportMapper
 {
     public class ImportMappingExpression<TDestination> : IImportMappingExpression<TDestination>
     {
-        private readonly List<PropertyMapInfo> _memberConfigurations =
-            new List<PropertyMapInfo>();
+        private readonly List<PropertyMapInfo> _memberConfigurations = [];
 
         public IImportMappingExpression<TDestination> ForMember<TMember>
             (Expression<Func<TDestination, TMember>> destinationMember,
@@ -34,17 +34,17 @@ namespace ExcelMapper.ExcelMapper
 
         }
 
-        public List<LambdaExpression> GetActions(PropertyInfo property)
+        public IEnumerable<LambdaExpression> GetActions(PropertyInfo property)
         {
             return _memberConfigurations
                     .FirstOrDefault(x => x.Property.Name == property.Name)?
-                    .Actions ?? new List<LambdaExpression>();
+                    .Actions ?? [];
         }
         public List<LambdaExpression> GetValidations(PropertyInfo property)
         {
             return _memberConfigurations
                    .FirstOrDefault(x => x.Property.Name == property.Name)?
-                   .Validations ?? new List<LambdaExpression>();
+                   .Validations ?? [];
         }
 
         public string GetCol(PropertyInfo property)
@@ -54,7 +54,7 @@ namespace ExcelMapper.ExcelMapper
 
         public List<string> GetIgnoredValues(PropertyInfo property)
         {
-            return _memberConfigurations.FirstOrDefault(x => x.Property.Name == property.Name)?.IgnoredValues ?? new List<string>();
+            return _memberConfigurations.FirstOrDefault(x => x.Property.Name == property.Name)?.IgnoredValues ?? [];
         }
     }
 }

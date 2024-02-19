@@ -1,28 +1,24 @@
-﻿using ExcelMapper.Models;
-using ExcelMapper.Util;
-using NPOI.SS.UserModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using NPOI.SS.UserModel;
+using YummyCode.ExcelMapper.Shared.Models;
 
-namespace ExcelMapper.ExcelExporter
+namespace YummyCode.ExcelMapper.Exporter
 {
     public class SheetBuilder<TSource> where TSource : new()
     {
         private ISheet _sheet;
         private readonly IWorkbook _workBook;
         private readonly IExportMapper<TSource> _mapper;
-        public ICollection<RowModel<TSource>> _data;
         private readonly SheetOptions<TSource> _options;
-        public SheetBuilder(IWorkbook workBook, IExportMapper<TSource> mapper, Action<SheetOptions<TSource>>? options = null)
+        private ICollection<RowModel<TSource>> _data;
+        public SheetBuilder(IWorkbook workBook, IExportMapper<TSource> mapper, Action<SheetOptions<TSource>> options = null)
         {
             _workBook = workBook;
             _mapper = mapper;
             _data = new List<RowModel<TSource>>();
             _options = new SheetOptions<TSource>(mapper);
-            if (options != null)
-            {
-                options?.Invoke(_options);
-            }
+            options?.Invoke(_options);
         }
         public SheetBuilder<TSource> UseData(ICollection<RowModel<TSource>> data)
         {
@@ -42,8 +38,7 @@ namespace ExcelMapper.ExcelExporter
 
         public SheetBuilder<TSource> SetRtl()
         {
-            if (_options != null)
-                _options.Rtl = true;
+            _options.Rtl = true;
             return this;
         }
 
@@ -55,16 +50,14 @@ namespace ExcelMapper.ExcelExporter
             headerStyle.VerticalAlignment = VerticalAlignment.Center;
             headerStyle.FillForegroundColor = IndexedColors.Grey25Percent.Index;
             headerStyle.FillPattern = FillPattern.SolidForeground;
-            if (_options != null)
-                _options.HeaderStyle = headerStyle;
+            _options.HeaderStyle = headerStyle;
             return this;
         }
 
         public SheetBuilder<TSource> UseHeaderStyle(CellStyleOptions cellStyle)
         {
             var headerStyle = cellStyle.ConvertToExcelCellStyle(_workBook);
-            if (_options != null)
-                _options.HeaderStyle = headerStyle;
+            _options.HeaderStyle = headerStyle;
             return this;
         }
 

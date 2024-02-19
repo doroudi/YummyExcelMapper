@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using ExcelMapper.ExcelMapper;
 
-namespace ExcelMapper.ExcelMapper
+namespace YummyCode.ExcelMapper.ImportMapper
 {
     public interface IImportMappingExpression<TDestination>
     {
         IImportMappingExpression<TDestination> ForMember<TMember>(Expression<Func<TDestination, TMember>> destinationMember, Action<ExcelMemberConfigurationExpression<TDestination, TMember>> memberOptions);
         string GetCol(PropertyInfo propertyInfo);
-        List<LambdaExpression> GetActions(PropertyInfo propertyInfo);
+        IEnumerable<LambdaExpression> GetActions(PropertyInfo propertyInfo);
         List<LambdaExpression> GetValidations(PropertyInfo propertyInfo);
         List<string> GetIgnoredValues(PropertyInfo propertyInfo);
 
-        // TODO: implement ForAllMemebers
+        // TODO: implement ForAllMembers
         //IImportMappingExpression<TDestination> ForAllMembers
         //    (Action<ImportConfigurationExpression<TDestination>> memberOptions);
 

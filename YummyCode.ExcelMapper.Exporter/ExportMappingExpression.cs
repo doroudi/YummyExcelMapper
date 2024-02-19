@@ -1,20 +1,20 @@
-﻿using ExcelMapper.Models;
-using NPOI.SS.UserModel;
-using NPOI.SS.Util;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using NPOI.SS.UserModel;
+using NPOI.SS.Util;
+using YummyCode.ExcelMapper.Exporter.Models;
+using YummyCode.ExcelMapper.Shared.Models;
 
-namespace ExcelMapper.ExcelExporter
+namespace YummyCode.ExcelMapper.Exporter
 {
     public class ExportMappingExpression<TDestination> : IExportMappingExpression<TDestination>
     {
-        private readonly List<CellMappingInfo> _memberConfigurations = new ();
         private ICellStyle _defaultStyle;
 
-        public List<CellMappingInfo> Mappings => _memberConfigurations;
+        public List<CellMappingInfo> Mappings { get; } = new List<CellMappingInfo>();
 
         public IExportMappingExpression<TDestination> ForAllMembers
             (Action<ExportConfigurationExpression<TDestination>> memberOptions)
@@ -36,7 +36,7 @@ namespace ExcelMapper.ExcelExporter
         {
             var colRef = new CellReference(column);
             var config = GetCellConfig(colRef.Col, destinationMember, memberOptions); ;
-            _memberConfigurations.Add(config);
+            Mappings.Add(config);
             return this;
         }
 
@@ -45,8 +45,8 @@ namespace ExcelMapper.ExcelExporter
            (Expression<Func<TDestination, TMember>> destinationMember,
            Action<ExportMemberConfigurationExpression<TDestination, TMember>> memberOptions = null)
         {
-            var config = GetCellConfig(_memberConfigurations.Count, destinationMember, memberOptions);
-            _memberConfigurations.Add(config);
+            var config = GetCellConfig(Mappings.Count, destinationMember, memberOptions);
+            Mappings.Add(config);
             return this;
         }
 
@@ -65,7 +65,7 @@ namespace ExcelMapper.ExcelExporter
 
             var config = new CellMappingInfo
             {
-                Title = expression.Header,
+                Header = expression.Header,
                 Column = column,
                 Property = property,
                 Actions = expression.Actions,
@@ -73,13 +73,13 @@ namespace ExcelMapper.ExcelExporter
                 ConstValue = expression.ConstValue,
                 DefaultValue = expression.DefaultValue?.ToString()
             };
-            _memberConfigurations.Add(config);
+            Mappings.Add(config);
             return config;
         }
 
         private string GetAvailableColumn()
         {
-            return ColumnIndexToColumnLetter(_memberConfigurations.Count + 1);
+            return ColumnIndexToColumnLetter(Mappings.Count + 1);
         }
 
         /// <summary>
@@ -90,11 +90,11 @@ namespace ExcelMapper.ExcelExporter
         /// <returns>corresponding column name for colIndex</returns>
         private string ColumnIndexToColumnLetter(int colIndex)
         {
-            int div = colIndex;
-            string colLetter = String.Empty;
+            var div = colIndex;
+            var colLetter = string.Empty;
             while (div > 0)
             {
-                int mod = (div - 1) % 26;
+                var mod = (div - 1) % 26;
                 colLetter = (char)(65 + mod) + colLetter;
                 div = ((div - mod) / 26);
             }
@@ -103,7 +103,7 @@ namespace ExcelMapper.ExcelExporter
 
         public List<LambdaExpression> GetActions(PropertyInfo property)
         {
-            return _memberConfigurations
+            return Mappings
                     .FirstOrDefault(x => x.Property.Name == property.Name)?
                     .Actions ?? new List<LambdaExpression>();
         }
@@ -112,7 +112,7 @@ namespace ExcelMapper.ExcelExporter
         {
             get
             {
-                return _memberConfigurations.FirstOrDefault(x => x.Property.Name == property.Name);
+                return Mappings.FirstOrDefault(x => x.Property.Name == property.Name);
             }
         }
 

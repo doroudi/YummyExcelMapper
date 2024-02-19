@@ -1,4 +1,4 @@
-﻿namespace ExcelMapper.Models
+﻿namespace YummyCode.ExcelMapper.Shared.Models
 {
     public enum ResultState
     {

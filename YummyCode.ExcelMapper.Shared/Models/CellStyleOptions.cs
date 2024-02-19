@@ -1,7 +1,7 @@
-﻿using ExcelMapper.Util;
-using NPOI.SS.UserModel;
+﻿using NPOI.SS.UserModel;
+using YummyCode.ExcelMapper.Shared.Extensions;
 
-namespace ExcelMapper.Models
+namespace YummyCode.ExcelMapper.Shared.Models
 {
     public class CellStyleOptions
     {
@@ -23,10 +23,10 @@ namespace ExcelMapper.Models
             if (BorderStyle != null)
             {
                 style.BorderTop =
-                style.BorderBottom =
-                style.BorderLeft =
-                style.BorderRight =
-                    BorderStyle.Value;
+                    style.BorderBottom =
+                        style.BorderLeft =
+                            style.BorderRight =
+                                BorderStyle.Value;
             }
             if (VerticalAlignment != null)
             {
@@ -42,9 +42,7 @@ namespace ExcelMapper.Models
             {
                 style.SetFont(book.GetCustomFont(FontFamily));
             }
-
             return style;
         }
-
     }
 }

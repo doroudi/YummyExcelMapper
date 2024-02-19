@@ -1,11 +1,12 @@
-﻿using ExcelMapper.Models;
-using NPOI.SS.UserModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using NPOI.SS.UserModel;
+using YummyCode.ExcelMapper.Exporter.Models;
+using YummyCode.ExcelMapper.Shared.Models;
 
-namespace ExcelMapper.ExcelExporter
+namespace YummyCode.ExcelMapper.Exporter
 {
     public interface IExportMappingExpression<TDestination>
     {

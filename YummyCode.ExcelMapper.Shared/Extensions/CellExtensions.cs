@@ -1,8 +1,9 @@
-﻿using ExcelMapper.Models;
+﻿using System;
+using System.Globalization;
 using NPOI.SS.UserModel;
-using System;
+using YummyCode.ExcelMapper.Shared.Models;
 
-namespace ExcelMapper.Exceptions
+namespace YummyCode.ExcelMapper.Shared.Extensions
 {
     public static class CellExtensions
     {
@@ -46,14 +47,16 @@ namespace ExcelMapper.Exceptions
             {
                 return @this.CellType switch
                 {
-                    CellType.Numeric => DateUtil.IsCellDateFormatted(@this) ? @this.DateCellValue.ToString() : @this.NumericCellValue.ToString(),
+                    CellType.Numeric => DateUtil.IsCellDateFormatted(@this) ? 
+                        @this.DateCellValue.ToString(CultureInfo.InvariantCulture) 
+                        : @this.NumericCellValue.ToString(CultureInfo.InvariantCulture),
                     CellType.String => @this.StringCellValue,
                     CellType.Blank => string.Empty,
                     CellType.Formula =>
                                 @this.CachedFormulaResultType == CellType.Numeric ?
-                                    @this.NumericCellValue.ToString() :
+                                    @this.NumericCellValue.ToString(CultureInfo.InvariantCulture) :
                                     @this.StringCellValue,
-                    _ => @this.StringCellValue ?? @this.NumericCellValue.ToString()
+                    _ => @this.StringCellValue ?? @this.NumericCellValue.ToString(CultureInfo.InvariantCulture)
                 };
             }
             catch

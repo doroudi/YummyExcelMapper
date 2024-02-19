@@ -1,7 +1,7 @@
 ﻿using NPOI.SS.UserModel;
 using NPOI.SS.Util;
 
-namespace ExcelMapper.Util
+namespace YummyCode.ExcelMapper.Shared.Extensions
 {
     public static class RowExtensions
     {

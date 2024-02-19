@@ -1,12 +1,12 @@
-﻿using NPOI.SS.UserModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using NPOI.SS.UserModel;
 
-namespace ExcelMapper.ExcelExporter
+namespace YummyCode.ExcelMapper.Exporter.Models
 {
-    public class ExportConfigurationExpression<TDestination>
+    public abstract class ExportConfigurationExpression<TDestination>
     {
         public string Column { get; private set; }
         public ICellStyle CellStyle { get; private set; }
@@ -24,25 +24,7 @@ namespace ExcelMapper.ExcelExporter
         //public CellStyleOptions? CellStyle { get; private set; } = new CellStyleOptions();
         public string? DefaultValue { get; private set; }
         public string? ConstValue { get; private set; }
-        public List<LambdaExpression> Actions { get; private set; } = new List<LambdaExpression>();
-
-
-        // TODO: implement this
-        //public ExportMemberConfigurationExpression<TDestination, TMember> MapFrom(Expression<Func<TDestination,TMember>> destinationMember)
-        //{
-
-        //    var memberName = ((MemberExpression)destinationMember.Body).Member.Name;
-        //    Property = typeof(TDestination).GetProperty(memberName);
-
-        //    return this;
-        //}
-
-        //public ExportMemberConfigurationExpression<TDestination, TMember> UseStyle
-        //    (Action<CellStyleOptions> options)
-        //{
-        //    options.Invoke(CellStyle);
-        //    return this;
-        //}
+        public List<LambdaExpression> Actions { get; } = new List<LambdaExpression>();
 
         public ExportMemberConfigurationExpression<TDestination, TMember> UseStyle
             (ICellStyle cellStyle)
@@ -60,7 +42,7 @@ namespace ExcelMapper.ExcelExporter
             return this;
         }
 
-        public ExportMemberConfigurationExpression<TDestination, TMember> WithTitle(string title)
+        public ExportMemberConfigurationExpression<TDestination, TMember> WithHeader(string title)
         {
             Header = title;
             return this;
@@ -71,7 +53,7 @@ namespace ExcelMapper.ExcelExporter
         {
             Expression<Func<TDestination, string, TMember>> expr = (dest, member) =>
                 action(dest, member);
-            Actions?.Add(expr);
+            Actions.Add(expr);
             return this;
         }
 
@@ -87,11 +69,6 @@ namespace ExcelMapper.ExcelExporter
         {
             ConstValue = constValue;
             return this;
-        }
-
-        public object UseStyle(object englishStyle)
-        {
-            throw new NotImplementedException();
         }
     }
 }

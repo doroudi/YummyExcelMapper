@@ -5,10 +5,12 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ExcelMapper\YummyCode.ExcelMapper.csproj" />
+    <ProjectReference Include="..\ExcelMapper\YummyCode.ExcelMapper.Importer.csproj" />
+    <ProjectReference Include="..\YummyCode.ExcelMapper.Exporter\YummyCode.ExcelMapper.Exporter.csproj" />
   </ItemGroup>
 
   <ItemGroup>

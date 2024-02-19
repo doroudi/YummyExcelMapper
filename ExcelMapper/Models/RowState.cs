@@ -1,5 +1,5 @@
-﻿using ExcelMapper.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using YummyCode.ExcelMapper.Shared.Models;
 
 namespace YummyCode.ExcelMapper.Models
 {

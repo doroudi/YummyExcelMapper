@@ -1,18 +1,13 @@
 ﻿using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ExcelMapper.Util
+namespace YummyCode.ExcelMapper.Shared.Extensions
 {
-    public static class StyleUtils
+    public static class WorkBookExtensions
     {
         public static IFont GetCustomFont(this IWorkbook @this, string fontName, int fontSize = 11, bool isBold = false)
         {
-            XSSFFont hFont = (XSSFFont)@this.CreateFont();
+            var hFont = (XSSFFont)@this.CreateFont();
 
             hFont.FontHeightInPoints = fontSize;
             hFont.FontName = fontName ?? "Calibri";
