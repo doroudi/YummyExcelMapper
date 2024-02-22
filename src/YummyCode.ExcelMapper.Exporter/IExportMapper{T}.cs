@@ -22,7 +22,7 @@ namespace YummyCode.ExcelMapper.Exporter
         /// </summary>
         /// <param name="data">object to map data from it</param>
         /// <param name="row">Excel row to write mapped data to it</param>
-        /// <returns>instance of TDestionation class contains values from mapped from excel</returns>
+        /// <returns>instance of TDestination class contains values from mapped from excel</returns>
         /// <exception cref="ExcelMappingException">throws on fail to map some properties from excel file</exception>
         void Map(TDestination data, IRow row);
         /// <summary>

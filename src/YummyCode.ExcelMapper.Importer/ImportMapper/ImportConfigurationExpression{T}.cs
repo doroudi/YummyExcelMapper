@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace ExcelMapper.ExcelMapper
+namespace YummyCode.ExcelMapper.ImportMapper
 {
     public class ExcelMemberConfigurationExpression<TDestination, TMember>
     {
         public string? Column { get; private set; }
         public string? Header { get; set; }
-        public List<LambdaExpression> Actions { get; private set; } = new List<LambdaExpression>();
-        public List<LambdaExpression> ValidationActions { get; private set; } = new List<LambdaExpression>();
-        public TMember DefaultValue;
-        public List<string> IgnoredValues { get; private set; } = new List<string>();
+        public List<LambdaExpression> Actions { get; private set; } = [];
+        public List<LambdaExpression> ValidationActions { get; private set; } = [];
+        public TMember? DefaultValue;
+        public List<string> IgnoredValues { get; private set; } = [];
         public ExcelMemberConfigurationExpression<TDestination, TMember> MapFromCol(string col)
         {
             Column = col;
@@ -55,7 +55,6 @@ namespace ExcelMapper.ExcelMapper
                     validationAction(member);
                 ValidationActions.Add(expr);
             }
-
             return this;
         }
 

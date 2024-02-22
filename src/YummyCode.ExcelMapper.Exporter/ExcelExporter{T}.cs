@@ -6,9 +6,8 @@ namespace YummyCode.ExcelMapper.Exporter
 {
     public class ExcelWriter
     {
-        public SXSSFWorkbook WorkBook { get; } = new();
+        private SXSSFWorkbook WorkBook { get; } = new();
         
-        #region Methods
         /// <summary>
         /// Add new sheet using SheetBuilder
         /// </summary>
@@ -41,7 +40,5 @@ namespace YummyCode.ExcelMapper.Exporter
             WorkBook.Write(fileStream);
             GC.Collect();
         }
-
-        #endregion
     }
 }

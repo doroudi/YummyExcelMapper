@@ -1,23 +1,21 @@
-﻿using ExcelMapper.Test.Models;
-using NPOI.SS.UserModel;
-using YummyCode.ExcelMapper.Exporter;
+﻿using YummyCode.ExcelMapper.Exporter;
+using YummyCode.ExcelMapper.TestApp.Models;
 
-namespace YummyCode.ExcelMapper.Test.MapperProfiles
+namespace YummyCode.ExcelMapper.TestApp.MapperProfiles
 {
     public class ExportProfile: ExportMapper<Person>
     {
-        public ExportProfile(IWorkbook workbook): base(workbook)
+        public ExportProfile()
         {
             _ = CreateMap()
                 .ForColumn("A", x => x.Name, opt => opt.WithHeader("Name"))
                 .ForColumn("B", x => x.Family, opt => opt.WithHeader("Family"))
-                .ForColumn("C", x => x.BirthDate, opt => opt.WithHeader("BirthDate").UseAction(ConvertToPersian))
+                .ForColumn("C", x => x.BirthDate, opt => opt.WithHeader("BirthDate").UseAction(UseCommaSeparation))
                 .ForColumn("D", x => x.Address, opt => opt.WithHeader("Address"))
-                .ForColumn("E", x => x.Name, opt => opt.WithHeader("NAME").UseAction(x => x?.ToUpper()));
-                // .ForColumn("B", opt => opt.MapFrom<Employee>(x => x.Name));
+                .ForColumn("D", x => x.Name, opt => opt.WithHeader("FULLNAME").UseAction(x => x?.ToUpper()));
         }
 
-        private static string ConvertToPersian(DateTime? arg)
+        private static string UseCommaSeparation(DateTime? arg)
         {
             return arg?.ToShortDateString() ?? "";
         }

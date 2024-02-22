@@ -1,6 +1,6 @@
-﻿namespace ExcelMapper.Test.Models
+﻿namespace YummyCode.ExcelMapper.TestApp.Models
 {
-    public record Person
+    public class Person
     {
         public string? Id { get; set; }
         public string? Name { get; set; }

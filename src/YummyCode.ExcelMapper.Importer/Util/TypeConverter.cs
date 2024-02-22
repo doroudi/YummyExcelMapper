@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using YummyCode.ExcelMapper.Shared.Extensions;
 
 namespace ExcelMapper.Util
 {
@@ -19,11 +20,11 @@ namespace ExcelMapper.Util
             try
             {
                 // special case for enums
-                if (targetType.IsEnum)
+                if (valueToSet != null && targetType.IsEnum)
                 {
                     // we could be going from an int -> enum so specifically let
                     // the Enum object take care of this conversion
-                    if (valueToSet != null)
+                    if (valueToSet != null && valueToSet != null)
                     {
                         valueToSet = Enum.ToObject(targetType, valueToSet);
                     }
@@ -33,36 +34,40 @@ namespace ExcelMapper.Util
                     // returns an System.Object with the specified System.Type and whose value is
                     // equivalent to the specified object.
 
-                    if (string.IsNullOrEmpty(valueToSet.ToString()))
+                    if (valueToSet != null && string.IsNullOrEmpty(valueToSet.ToString()))
                     {
                         valueToSet = null;
                     }
-                    else if (targetType == typeof(DateTime))
+                    else if (valueToSet != null && targetType == typeof(DateTime))
                     {
                         // TODO: improve implementation
                         valueToSet = valueToSet.ToString().Replace(".", "/");
-                        string[] formats = { "dd/MM/yyyy", "d/MM/yyyy" };
-                        if (DateTime.TryParse(valueToSet.ToString(), out DateTime converted))
+                        valueToSet = valueToSet.ToString().NormalizeDateFormat();
+                        string[] formats = { "dd/MM/yyyy", "dd/M/yyyy", "d/M/yyyy", "d/MM/yyyy",
+                                "dd/MM/yy", "dd/M/yy", "d/M/yy", "d/MM/yy"};
+
+                        if (valueToSet != null && DateTime.TryParse(valueToSet.ToString(), out DateTime converted))
                         {
                             valueToSet = converted;
                         }
-                        else if (DateTime.TryParseExact(valueToSet.ToString(), formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out converted))
+                        else if (valueToSet != null && DateTime.TryParseExact(valueToSet.ToString(), formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out converted))
                         {
                             valueToSet = converted;
                         }
                         else
                         {
-                            valueToSet = DateTime.MinValue;
+                            valueToSet = null;
                         }
                     }
                     else
                     {
-                        valueToSet = Convert.ChangeType(valueToSet, targetType);
+                        var basicType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+                        valueToSet = (valueToSet == null) ? null : Convert.ChangeType(valueToSet, basicType);
                     }
                 }
 
                 // set the value of the property
-                property.SetValue(source, valueToSet, null);
+                property.SetValue(source, valueToSet);
             }
             catch (Exception ex)
             {

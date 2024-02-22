@@ -1,8 +1,7 @@
 ﻿using NPOI.SS.UserModel;
 using YummyCode.ExcelMapper.Exceptions;
-using YummyCode.ExcelMapper.ImportMapper;
 
-namespace ExcelMapper.ExcelMapper
+namespace YummyCode.ExcelMapper.ImportMapper
 {
     /// <summary>
     /// Mapper class for create map between POCO and Excel file
@@ -21,7 +20,7 @@ namespace ExcelMapper.ExcelMapper
         /// </summary>
         /// <param name="sheet">Excel Worksheet to map from</param>
         /// <param name="source">Excel row</param>
-        /// <returns>instance of TDestionation class contains values from mapped from excel</returns>
+        /// <returns>instance of TDestination class contains values from mapped from excel</returns>
         /// <exception cref="ExcelMappingException">throws on fail to map some properties from excel file</exception>
         TDestination Map(ISheet sheet, IRow source);
     }

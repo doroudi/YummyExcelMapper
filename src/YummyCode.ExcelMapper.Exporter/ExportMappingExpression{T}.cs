@@ -14,20 +14,7 @@ namespace YummyCode.ExcelMapper.Exporter
     {
         private ICellStyle _defaultStyle;
 
-        public List<CellMappingInfo> Mappings { get; } = new List<CellMappingInfo>();
-
-        public IExportMappingExpression<TDestination> ForAllMembers
-            (Action<ExportConfigurationExpression<TDestination>> memberOptions)
-        {
-
-            throw new NotImplementedException();
-        }
-
-        public IExportMappingExpression<TDestination> ForAllOtherMembers(Action<ExportConfigurationExpression<TDestination>> memberOptions)
-        {
-            // TODO: implement this
-            throw new NotImplementedException();
-        }
+        public List<CellMappingInfo> Mappings { get; } = [];
 
         public ExportMappingExpression<TDestination> ForColumn<TMember>
             (string column,
@@ -35,7 +22,7 @@ namespace YummyCode.ExcelMapper.Exporter
             Action<ExportMemberConfigurationExpression<TDestination, TMember>> memberOptions = null)
         {
             var colRef = new CellReference(column);
-            var config = GetCellConfig(colRef.Col, destinationMember, memberOptions); ;
+            var config = GetCellConfig(colRef.Col, destinationMember, memberOptions);
             Mappings.Add(config);
             return this;
         }
@@ -50,7 +37,8 @@ namespace YummyCode.ExcelMapper.Exporter
             return this;
         }
 
-        private CellMappingInfo GetCellConfig<TMember>(int column, Expression<Func<TDestination, TMember>> destinationMember, Action<ExportMemberConfigurationExpression<TDestination, TMember>> memberOptions)
+        private CellMappingInfo GetCellConfig<TMember>(int column, Expression<Func<TDestination, TMember>> destinationMember,
+            Action<ExportMemberConfigurationExpression<TDestination, TMember>> memberOptions)
         {
             var memberName = ((MemberExpression)destinationMember.Body).Member.Name;
             var property = typeof(TDestination).GetProperty(memberName);
@@ -71,9 +59,8 @@ namespace YummyCode.ExcelMapper.Exporter
                 Actions = expression.Actions,
                 Style = expression.CellStyle,
                 ConstValue = expression.ConstValue,
-                DefaultValue = expression.DefaultValue?.ToString()
+                DefaultValue = expression.DefaultValue
             };
-            Mappings.Add(config);
             return config;
         }
 
@@ -88,7 +75,7 @@ namespace YummyCode.ExcelMapper.Exporter
         /// </summary>
         /// <param name="colIndex">index of column in excel</param>
         /// <returns>corresponding column name for colIndex</returns>
-        private string ColumnIndexToColumnLetter(int colIndex)
+        private static string ColumnIndexToColumnLetter(int colIndex)
         {
             var div = colIndex;
             var colLetter = string.Empty;
@@ -104,15 +91,15 @@ namespace YummyCode.ExcelMapper.Exporter
         public List<LambdaExpression> GetActions(PropertyInfo property)
         {
             return Mappings
-                    .FirstOrDefault(x => x.Property.Name == property.Name)?
-                    .Actions ?? new List<LambdaExpression>();
+                    .FirstOrDefault(x => x.Property?.Name == property.Name)?
+                    .Actions ?? [];
         }
 
         public CellMappingInfo this[PropertyInfo property]
         {
             get
             {
-                return Mappings.FirstOrDefault(x => x.Property.Name == property.Name);
+                return Mappings.FirstOrDefault(x => x.Property?.Name == property.Name);
             }
         }
 

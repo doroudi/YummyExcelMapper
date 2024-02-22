@@ -13,12 +13,10 @@ namespace YummyCode.ExcelMapper.Exporter
         ExportMappingExpression<TDestination> ForColumn<TMember>
             (string col,
             Expression<Func<TDestination, TMember>> destinationMember,
-            Action<ExportMemberConfigurationExpression<TDestination, TMember>>? memberOptions = null);
-
-
+            Action<ExportMemberConfigurationExpression<TDestination, TMember>> memberOptions = null);
         ExportMappingExpression<TDestination> AddColumn<TMember>
             (Expression<Func<TDestination, TMember>> destinationMember,
-            Action<ExportMemberConfigurationExpression<TDestination, TMember>>? memberOptions = null);
+            Action<ExportMemberConfigurationExpression<TDestination, TMember>> memberOptions = null);
         ExportMappingExpression<TDestination> SetDefaultStyle(ICellStyle options);
         List<LambdaExpression> GetActions(PropertyInfo propertyInfo);
         public List<CellMappingInfo> Mappings { get; }

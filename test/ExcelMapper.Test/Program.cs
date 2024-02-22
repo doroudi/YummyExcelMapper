@@ -1,8 +1,8 @@
-﻿using ExcelMapper.Test.Models;
-using YummyCode.ExcelMapper.ExcelParser;
+﻿using YummyCode.ExcelMapper.ExcelParser;
 using YummyCode.ExcelMapper.Exporter;
 using YummyCode.ExcelMapper.Logger;
-using YummyCode.ExcelMapper.Test.MapperProfiles;
+using YummyCode.ExcelMapper.TestApp.MapperProfiles;
+using YummyCode.ExcelMapper.TestApp.Models;
 
 const string fileName = @"AppData\persons.xlsx";
 ExcelParser<Person> parser = new (new FileInfo(fileName), new EmployeeMapperProfile());
@@ -19,8 +19,11 @@ logger.LogInvalidColumns(parser.RowsState);
 
 var exporter = new ExcelWriter();
 exporter.AddSheet(
-            new ExportProfile(exporter.WorkBook), 
-            builder => builder.SetRtl().UseData(people).UseDefaultHeaderStyle().Build()
+            new ExportProfile(), 
+            builder => builder.UseData(people).UseDefaultHeaderStyle().Build()
         );
-
-exporter.SaveToFile("EXPORT.xlsx");
+if (!Directory.Exists("Export"))
+{
+  Directory.CreateDirectory("Export");
+}
+exporter.SaveToFile(Path.Join("Export", $"Export-{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.xlsx"));

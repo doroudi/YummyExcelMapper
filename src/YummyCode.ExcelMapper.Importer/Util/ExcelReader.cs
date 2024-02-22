@@ -8,41 +8,59 @@ namespace ExcelMapper.Util
 {
     public class ExcelReader
     {
-        private readonly string _path;
+        private bool initialized = false;
         private IWorkbook _workBook;
-        public ExcelReader(string path)
+
+        public ExcelReader()
         {
-            _path = path;
-            _workBook = InitializeFile();
+            _workBook = new XSSFWorkbook();
+        }
+
+        public ExcelReader FromFile(string path)
+        {
+            InitializeFile(path);
+            return this;
+        }
+
+        public ExcelReader FromStream(Stream stream)
+        {
+            InitializeStream(stream);
+            return this;
         }
 
         public ISheet this[int index]
         {
             get
             {
+                if (!initialized)
+                {
+                    throw new InvalidOperationException("Source not Initialized");
+                }
+
                 return _workBook.GetSheetAt(index);
             }
         }
 
-        public ISheet this[string name]
+        public ISheet GetSheet(int index) => this[index];
+
+        private void InitializeStream(Stream stream)
         {
-            get
-            {
-                return _workBook.GetSheet(name);
-            }
+            _workBook = new XSSFWorkbook(stream);
+            initialized = true;
         }
 
-        public XSSFWorkbook InitializeFile()
+        private void InitializeFile(string path)
         {
             try
             {
                 using var stream =
-                    File.Open(_path, FileMode.Open, FileAccess.Read);
-                return new XSSFWorkbook(stream);
+                    File.Open(path, FileMode.Open, FileAccess.Read);
+                _workBook = new XSSFWorkbook(stream);
+                initialized = true;
             }
-            catch (Exception ex)
+            catch
             {
-                throw ex;
+                throw;
             }
         }
 

@@ -1,8 +1,8 @@
-﻿using ExcelMapper.Test.Models;
-using YummyCode.ExcelMapper.ImportMapper;
+﻿using YummyCode.ExcelMapper.ImportMapper;
+using YummyCode.ExcelMapper.TestApp.Models;
 using YummyCode.ExcelMapper.Validations;
 
-namespace YummyCode.ExcelMapper.Test.MapperProfiles
+namespace YummyCode.ExcelMapper.TestApp.MapperProfiles
 {
     public class EmployeeMapperProfile : ExcelImportMapper<Person>
     {

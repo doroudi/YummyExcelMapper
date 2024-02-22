@@ -6,7 +6,7 @@ namespace YummyCode.ExcelMapper.Models
     public class RowState
     {
         public int Row { get; set; }
-        public ICollection<CellState> CellsState { get; set; }
+        public List<CellState> CellsState { get; set; }
         public ResultState State { get; set; }
     }
 

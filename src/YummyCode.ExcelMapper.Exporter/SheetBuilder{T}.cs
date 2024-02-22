@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using NPOI.SS.UserModel;
+using NPOI.XSSF.Streaming;
 using YummyCode.ExcelMapper.Shared.Models;
 
 namespace YummyCode.ExcelMapper.Exporter
@@ -46,7 +49,12 @@ namespace YummyCode.ExcelMapper.Exporter
         {
             var headerStyle = _workBook.CreateCellStyle();
             headerStyle.Alignment = HorizontalAlignment.Center;
-            headerStyle.BorderTop = headerStyle.BorderBottom = headerStyle.BorderLeft = headerStyle.BorderRight = BorderStyle.Thin;
+            headerStyle.BorderTop = 
+                    headerStyle.BorderBottom = 
+                    headerStyle.BorderLeft =
+                    headerStyle.BorderRight = 
+                        BorderStyle.Thin;
+            
             headerStyle.VerticalAlignment = VerticalAlignment.Center;
             headerStyle.FillForegroundColor = IndexedColors.Grey25Percent.Index;
             headerStyle.FillPattern = FillPattern.SolidForeground;
@@ -63,44 +71,50 @@ namespace YummyCode.ExcelMapper.Exporter
 
         public ISheet Build()
         {
-            _sheet = _workBook.CreateSheet(_options?.Name ?? "Sheet 1");
+            _sheet = _workBook.CreateSheet(_options?.Name ??
+                                           new CultureInfo("en-US").TextInfo.ToTitleCase(typeof(TSource).Name));
 
             if (_options.Rtl)
             {
                 _sheet.IsRightToLeft = true;
             }
-            BuildHeader();
+            BuildHeader(freez: true);
             SetData();
-            SetAutoWidthColumns();
             return _sheet;
         }
 
-        private void SetAutoWidthColumns()
-        {
-            for (var i = 0; i < _sheet.GetRow(0).Cells.Count; i++)
-            {
-                _sheet.AutoSizeColumn(i);
-            }
-        }
 
         private void SetData()
         {
-            foreach (var item in _data)
+            for (var i = 0; i < _data.Count; i++)
             {
-                var sheetRow = _sheet.CreateRow(item.Row);
+                var item = _data.ElementAt(i);
+                var sheetRow = _sheet.CreateRow(i + 1); // +1 to ignore header
                 _mapper.Map(item.Source, sheetRow);
+            }
+
+            var columnCount = _mapper.Mappings.Count();
+            for (var i = 0; i < columnCount; i++)
+            {
+                _sheet.AutoSizeColumn(i);
+                GC.Collect();
             }
         }
 
-        private void BuildHeader()
+        private void BuildHeader(bool freez = false)
         {
             var headerRow = _sheet.CreateRow(0);
             _mapper.MapHeader(ref headerRow);
+            ((SXSSFSheet)_sheet).TrackAllColumnsForAutoSizing();
             foreach (var cell in _sheet.GetRow(0))
             {
                 cell.CellStyle = _options.HeaderStyle;
             }
-        }
 
+            if (freez)
+            {
+                _sheet.CreateFreezePane(0, 1, 0, 1);
+            }
+        }
     }
 }

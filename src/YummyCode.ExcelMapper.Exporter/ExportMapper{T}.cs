@@ -9,48 +9,28 @@ namespace YummyCode.ExcelMapper.Exporter
 {
     public abstract class ExportMapper<TSource> : IExportMapper<TSource> where TSource : new()
     {
-        // protected IWorkbook Workbook;
-        private IExportMappingExpression<TSource> _mappingExpression;
-        private Dictionary<int, List<Delegate>> _compiledActions;
-
-        public ExportMapper(IWorkbook workbook)
-        {
-            // Workbook = workbook;
-            _mappingExpression = new ExportMappingExpression<TSource>();
-            _compiledActions = new Dictionary<int, List<Delegate>>();
-        }
+        private readonly IExportMappingExpression<TSource> _mappingExpression = new ExportMappingExpression<TSource>();
+        private readonly Dictionary<int, List<Delegate>> _compiledActions = [];
 
         public List<CellMappingInfo> Mappings =>
             _mappingExpression.Mappings;
 
         public IExportMappingExpression<TSource> CreateMap()
         {
-            var expression = new ExportMappingExpression<TSource>();
-            _mappingExpression = expression;
-            _compiledActions = new Dictionary<int, List<Delegate>>();
-            return expression;
+            return _mappingExpression;
         }
 
         public void Map(TSource data, IRow row)
         {
-            if (_compiledActions.Count == 0)
+            if (!_compiledActions.Any())
             {
                 CompileMappingActions();
             }
 
-            var mappingCols = _mappingExpression.Mappings;
-            foreach (var colMapping in mappingCols)
+            foreach (var colMapping in _mappingExpression.Mappings)
             {
-                try
-                {
-                    var converted = ExecuteMappingAction(data, colMapping);
-                    SetCellValue(row, colMapping, converted);
-                }
-                //TODO Check 
-                catch
-                {
-                    throw;
-                }
+                var converted = ExecuteMappingAction(data, colMapping);
+                SetCellValue(row, colMapping, converted); // TODO: exception handling required
             }
         }
 
@@ -70,43 +50,50 @@ namespace YummyCode.ExcelMapper.Exporter
 
         private static void SetCellValue(IRow row, CellMappingInfo colMapping, object converted)
         {
-            // TODO: should check for value is correct column name in excel
-            if (colMapping.Column < 0) return;
-
             var cellValue = string.Empty;
             if (colMapping.ConstValue != null)
+            {
                 cellValue = colMapping.ConstValue;
-
+            }
             else if (converted != null)
+            {
                 cellValue = converted.ToString();
-
+            }
             else if (colMapping.DefaultValue != null)
+            {
                 cellValue = colMapping.DefaultValue;
+            }
+
+            // TODO: should check for value is correct column name in excel
+            if (colMapping.Column < 0)
+            {
+                return;
+            }
 
             var cell = row.CreateCell(colMapping.Column);
             if (colMapping.Style != null)
+            {
                 cell.CellStyle = colMapping.Style;
+            }
 
             cell.SetCellValue(cellValue);
         }
 
         private object ExecuteMappingAction(TSource data, CellMappingInfo mapping)
         {
-            //data = data ?? throw new ArgumentNullException(nameof(data));
-            //mapping = mapping ?? throw new ArgumentNullException(nameof(mapping));
-            var value = data?.GetType().GetProperty(mapping.Property?.Name).GetValue(data, null);
-            if (!_compiledActions.ContainsKey(mapping.Column)) return value;
+            if (mapping?.Property?.Name == null)
+                throw new ArgumentException("Property not set");
+            
+            var value = data?.GetType().GetProperty(mapping.Property.Name)?.GetValue(data, null);
+            if (!_compiledActions.ContainsKey(mapping.Column)) { return value; }
             var converted = value;
             for (var i = 0; i < _compiledActions[mapping.Column].Count; i++)
             {
                 var action = _compiledActions[mapping.Column][i];
                 converted = action.DynamicInvoke(converted);
             }
-
             return converted;
         }
-
-
         public void MapHeader(ref IRow headerRow)
         {
             var mappingCols = _mappingExpression.Mappings;
@@ -119,7 +106,6 @@ namespace YummyCode.ExcelMapper.Exporter
         public IEnumerable<string> GetMappingColumns()
         {
             var items = _mappingExpression.Mappings;
-            //items.Reverse();
             foreach (var item in items)
             {
                 yield return item.Header ?? item.Property?.Name ?? "";
